@@ -4,7 +4,7 @@
     let addButton = document.querySelector('.btn-add');
     let deleteButton = document.querySelector('.btn-delete');
     let clickNbr = document.querySelector('#click-nbr');
-    var apiUrl = 'http://localhost:3000/api/clicks';
+    var apiUrl = 'http://localhost:8080/api/clicks';
 
     function ready(fn){
         if(typeof fn !== 'function'){
@@ -18,7 +18,7 @@
     }
 
     function ajaxRequest(method, url, callback){
-        var xmlhttp = new XMHttpRequest();
+        var xmlhttp = new XMLHttpRequest();
 
         xmlhttp.onreadystatechange = function(){
             if(xmlhttp.readyState === 4 && xmlhttp.status === 200){
@@ -37,6 +37,7 @@
     ready(ajaxRequest('GET', apiUrl, updateClickCount));
 
     addButton.addEventListener('click', () => {
+        console.log('asdfasdf');
         ajaxRequest('POST', apiUrl, () => {
             ajaxRequest('GET', apiUrl, updateClickCount);
         }, false);
