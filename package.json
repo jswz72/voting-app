@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run build && node server.js",
-    "build": "babel app -d dist"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -21,9 +21,14 @@
   "homepage": "https://github.com/jswz72/voting-app#readme",
   "dependencies": {
     "express": "^4.15.3",
-    "mongodb": "^2.2.30"
+    "mongodb": "^2.2.30",
+    "vue-router": "^2.7.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1"
+    "babel-loader": "^7.1.2",
+    "css-loader": "^0.28.5",
+    "vue-loader": "^13.0.4",
+    "vue-template-compiler": "^2.4.2",
+    "webpack": "^3.5.5"
   }
 }
