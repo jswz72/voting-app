@@ -37,7 +37,6 @@
     ready(ajaxRequest('GET', apiUrl, updateClickCount));
 
     addButton.addEventListener('click', () => {
-        console.log('asdfasdf');
         ajaxRequest('POST', apiUrl, () => {
             ajaxRequest('GET', apiUrl, updateClickCount);
         }, false);
@@ -48,5 +47,4 @@
             ajaxRequest('GET', apiUrl, updateClickCount);
         });
     }, false);
-    console.log("asdfasdf");
 })();
