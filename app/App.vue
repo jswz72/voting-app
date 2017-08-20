@@ -1,29 +1,34 @@
 <template>
-    <header>
-        <nav id="navbar">
-            <button id="home">
-                <router-link to="/">
+    <div>
+        <header>
+            <nav id="navbar" class="columns">
+                <div class="column is-8 is-offset-2">
+                <router-link to="/" id="home" class="button is-primary">
                     FCC Voting App
                 </router-link>
-            </button>
-            <div id="dialogbox">
-                <button @click="dropDownClicked = !dropDownClicked">
-                    SETTINGS
-                </button>
-                <drop-down v-if="dropDownClicked">
-                </drop-down>
+                <div id="dialogbox">
+                    <button class="button is-success" @click="dropDownClicked = !dropDownClicked">
+                        SETTINGS
+                    </button>
+                    <drop-down v-if="dropDownClicked"></drop-down>
+                </div>
             </div>
-            <div id="banner">
+            </nav>
+        </header>
+        <div class="columns">
+            <div id="textbox" class="column is-half is-offset-one-quarter">
                 <h1>Free Code Camp Voting App</h1>
                 <p>Select a poll to see the results and vote, or sign-in to make a new poll</p>
             </div>
-            <table>
+        </div>
+        <div class="columns">
+            <table class="column is-10 is-offset-2">
                 <tbody>
                     <poll-item v-for="(item, index) in polls" :item="item" :index="index" :key="item.id"></poll-item>
                 </tbody>
             </table>
-        </nav>
-    </header>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -56,9 +61,33 @@ export default {
 }
 </script>
 
-<style>
+<style lang="css">
+@import '~bulma/css/bulma.css';
+
+nav {
+    background-color: gray;
+}
 #dialogbox {
     float: right;
 }
+
+#textbox {
+    margin-top: 70px;
+    text-align: center;
+}
+
+#textbox h1 {
+    font-size: 3em;
+}
+
+#textbox p {
+    font-size: 1.2em;
+}
+
+drop-down {
+    margin-top:25px;
+    display: block;
+}
+
 
 </style>
