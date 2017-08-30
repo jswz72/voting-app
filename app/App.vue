@@ -1,47 +1,34 @@
 <template>
-    <div>
+    <div class="container">
         <header>
-            <nav id="navbar" class="columns">
-                <div class="column is-8 is-offset-2">
-                <router-link to="/" id="home" class="button is-primary">
+            <nav id="navbar" class=" is-horizontal">
+                <router-link to="/home" class="button is-primary">
                     FCC Voting App
                 </router-link>
-                <div id="dialogbox">
-                    <button class="button is-success" @click="dropDownClicked = !dropDownClicked">
+                <div id="dropdown">
+                    <button class="button is-success" id="dropbtn" @click="dropDownClicked = !dropDownClicked">
                         SETTINGS
                     </button>
                     <drop-down v-if="dropDownClicked"></drop-down>
                 </div>
-            </div>
             </nav>
         </header>
-        <div class="columns">
-            <div id="textbox" class="column is-half is-offset-one-quarter">
-                <h1>Free Code Camp Voting App</h1>
-                <p>Select a poll to see the results and vote, or sign-in to make a new poll</p>
-            </div>
-        </div>
-        <div class="columns">
-            <table class="column is-10 is-offset-2">
-                <tbody>
-                    <poll-item v-for="(item, index) in polls" :item="item" :index="index" :key="item.id"></poll-item>
-                </tbody>
-            </table>
-        </div>
+        <home v-if="isHome" :polls="polls"></home>
+        <sign-in v-if="isSignIn"></sign-in>
     </div>
 </template>
 
 <script>
 import DropDown from './components/dropdown.vue'
-import PollItem from './components/poll-item.vue'
+import Home from './components/home.vue'
+import SignIn from './components/signin.vue'
 
 export default {
     name: 'app',
     components: {
-        DropDown,
-        PollItem
-    },
-    mounted(){
+      DropDown,
+      Home,
+      SignIn,
     },
     data() {
         return {
@@ -55,6 +42,17 @@ export default {
             ]
         }
     },
+    computed: {
+      routerPath(){
+        return this.$route.path;
+      },
+      isHome(){
+        return this.routerPath === '/home';
+      },
+      isSignIn(){
+        return this.routerPath === '/signin'
+      }
+    },
     methods: {
 
     }
@@ -65,28 +63,11 @@ export default {
 @import '~bulma/css/bulma.css';
 
 nav {
-    background-color: gray;
-}
-#dialogbox {
-    float: right;
+    background-color: lightgray;
 }
 
-#textbox {
-    margin-top: 70px;
-    text-align: center;
-}
-
-#textbox h1 {
-    font-size: 3em;
-}
-
-#textbox p {
-    font-size: 1.2em;
-}
-
-drop-down {
-    margin-top:25px;
-    display: block;
+#dropdown {
+    float:right;
 }
 
 
