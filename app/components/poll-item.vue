@@ -1,5 +1,5 @@
 <template>
-    <tr>
+    <tr class="">
         {{item.name}}
     </tr>
 </template>
@@ -22,16 +22,4 @@ export default {
 
 <style>
 
-tr {
-    text-align: center;
-    font-size: 1.5em;
-}
-
-tr:nth-child(even) {
-    background-color: white;
-}
-
-tr:nth-child(odd){
-    background-color: #e8ebef;
-}
 </style>

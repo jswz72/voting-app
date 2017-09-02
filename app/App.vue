@@ -2,7 +2,7 @@
     <div class="container">
         <header>
             <nav id="navbar" class=" is-horizontal">
-                <router-link to="/home" class="button is-primary">
+                <router-link to="/" class="button is-primary">
                     FCC Voting App
                 </router-link>
                 <div id="dropdown">
@@ -35,10 +35,8 @@ export default {
             dropDownClicked: false,
             //test data
             polls: [
-                {name: 'poll1', id: 1 },
-                {name: 'poll2', id: 2 },
-                {name: 'poll3', id: 3 },
-                {name: 'poll4', id: 4 }
+                {id:1, name:"one"},
+                {id:2, name:"two"}
             ]
         }
     },
@@ -47,10 +45,13 @@ export default {
         return this.$route.path;
       },
       isHome(){
-        return this.routerPath === '/home';
+        return this.routerPath === '/';
       },
       isSignIn(){
         return this.routerPath === '/signin'
+      },
+      isProfile(){
+          return this.routerPath === '/profile'
       }
     },
     methods: {

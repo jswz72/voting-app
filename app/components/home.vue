@@ -7,9 +7,10 @@
             </div>
         </div>
         <div>
-            <table>
+            <table align="center"class="table is-striped">
                 <tbody>
-                <poll-item v-for="(item, index) in polls" :item="item" :index="index" :key="item.id"></poll-item>
+                    <poll-item v-if="polls.length > 0" v-for="(item, index) in polls" :item="item" :index="index" :key="item.id"></poll-item>
+                    <tr v-if="polls.length == 0">No polls found!</tr>
                 </tbody>
             </table>
         </div>
@@ -25,10 +26,13 @@ export default {
     PollItem,
   },
   props: {
-    polls: {
-      Type: Array,
-      Required: true
-    }
+      polls: {
+          type: Array,
+          required: true,
+      }
+  },
+  mounted(){
+      console.log(this.polls.length);
   }
 }
 
@@ -48,4 +52,18 @@ export default {
 #textbox p {
     font-size: 1.2em;
 }
+
+
+tr {
+    text-align: center;
+    font-size: 1.5em;
+}
+
+/*tr:nth-child(even) {
+    background-color: white;
+}
+
+tr:nth-child(odd){
+    background-color: #e8ebef;
+}*/
 </style>
