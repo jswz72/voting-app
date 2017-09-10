@@ -32,7 +32,7 @@ function clickHandler(db){
                 res.json(result);
             }
         );
-    }
+    };
 
     this.resetClicks = function(req, res){
         clicks.update(

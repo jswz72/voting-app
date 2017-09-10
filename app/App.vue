@@ -14,6 +14,7 @@
             </nav>
         </header>
         <home v-if="isHome" :polls="polls"></home>
+        <button @click="test">Test it out</button>
         <sign-in v-if="isSignIn"></sign-in>
         <new-poll v-if="isNewPoll"></new-poll>
     </div>
@@ -24,6 +25,8 @@ import DropDown from './components/dropdown.vue'
 import Home from './components/home.vue'
 import SignIn from './components/signin.vue'
 import NewPoll from './components/newpoll.vue'
+
+import gateway from './controllers/clickController.client'
 
 export default {
     name: 'app',
@@ -61,7 +64,10 @@ export default {
       }
     },
     methods: {
-
+      test(){
+        gateway.updateClickCount();
+        gateway.getClickCount();
+      }
     }
 }
 </script>
