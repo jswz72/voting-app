@@ -1,8 +1,8 @@
 'use strict';
+const apiUrl = 'http://localhost:8080/api/polls';
+const testApiUrl = 'http://localhost:8080/api/clicks';
 
-const apiUrl = 'http://localhost:8080/api/clicks';
-
-function ajaxRequest(method, url, callback){
+function ajaxRequest(method, url, params, callback){
   let xmlhttp = new XMLHttpRequest();
 
   xmlhttp.onreadystatechange = function() {
@@ -11,16 +11,23 @@ function ajaxRequest(method, url, callback){
     }
   };
   xmlhttp.open(method, url, true);
-  xmlhttp.send();
+  xmlhttp.send(JSON.stringify(params));
 }
 
-function updateClickCount(){
-  ajaxRequest('POST', apiUrl, data => {
+function updateClickCount(params){
+  let body = {'title': params};
+  ajaxRequest('POST', testApiUrl, body, data => {
     console.log(data);
   });
 }
 
 function getClickCount(){
+  ajaxRequest('GET', testApiUrl, '', data => {
+    console.log(data);
+  })
+}
+
+function addPoll(){
   ajaxRequest('GET', apiUrl, data => {
     console.log(data);
   })

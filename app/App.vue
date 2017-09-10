@@ -65,7 +65,7 @@ export default {
     },
     methods: {
       test(){
-        gateway.updateClickCount();
+        gateway.updateClickCount('asdfasd');
         gateway.getClickCount();
       }
     }

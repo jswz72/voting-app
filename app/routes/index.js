@@ -12,4 +12,7 @@ module.exports = function(app, db){
         .get(clickHandler.getClicks)
         .post(clickHandler.addClick)
         .delete(clickHandler.resetClicks);
+    app.route('/api/polls')
+      .get(clickHandler.getPoll)
+      .post(clickHandler.addPoll);
 };
