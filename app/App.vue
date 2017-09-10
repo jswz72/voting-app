@@ -15,6 +15,7 @@
         </header>
         <home v-if="isHome" :polls="polls"></home>
         <sign-in v-if="isSignIn"></sign-in>
+        <new-poll v-if="isNewPoll"></new-poll>
     </div>
 </template>
 
@@ -22,10 +23,12 @@
 import DropDown from './components/dropdown.vue'
 import Home from './components/home.vue'
 import SignIn from './components/signin.vue'
+import NewPoll from './components/newpoll.vue'
 
 export default {
     name: 'app',
     components: {
+      NewPoll,
       DropDown,
       Home,
       SignIn,
@@ -51,7 +54,10 @@ export default {
         return this.routerPath === '/signin'
       },
       isProfile(){
-          return this.routerPath === '/profile'
+        return this.routerPath === '/profile'
+      },
+      isNewPoll(){
+        return this.routerPath === '/newpoll'
       }
     },
     methods: {

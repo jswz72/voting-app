@@ -3,7 +3,11 @@
         <div>
             <div id="textbox" class="column is-half is-offset-one-quarter">
                 <h1>Free Code Camp Voting App</h1>
-                <p>Select a poll to see the results and vote, or sign-in to make a new poll</p>
+                <p>Select a poll to see the results and vote, or
+                    <span v-if="!userSignedIn">
+                        <router-link to="/signin">sign-in</router-link>to
+                    </span>
+                    make a <router-link v-if="userSignedIn" to="/newpoll">new poll</router-link></p>
             </div>
         </div>
         <div>
@@ -33,6 +37,11 @@ export default {
   },
   mounted(){
       console.log(this.polls.length);
+  },
+  computed: {
+    userSignedIn(){
+      return true;
+    }
   }
 }
 
