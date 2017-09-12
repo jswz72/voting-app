@@ -1,6 +1,6 @@
 <template>
     <tr class="">
-        {{item.name}}
+        {{item.title}}
     </tr>
 </template>
 

@@ -40,10 +40,7 @@ export default {
         return {
             dropDownClicked: false,
             //test data
-            polls: [
-                {id:1, name:"one"},
-                {id:2, name:"two"}
-            ]
+            polls: []
         }
     },
     computed: {
@@ -65,8 +62,9 @@ export default {
     },
     methods: {
       test(){
-        gateway.updateClickCount('asdfasd');
-        gateway.getClickCount();
+        gateway.getPolls().then(polls => {
+          this.polls = polls;
+        })
       }
     }
 }

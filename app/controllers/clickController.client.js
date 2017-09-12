@@ -1,39 +1,43 @@
 'use strict';
 const apiUrl = 'http://localhost:8080/api/polls';
 const testApiUrl = 'http://localhost:8080/api/clicks';
+import axios from 'axios';
 
-function ajaxRequest(method, url, params, callback){
-  let xmlhttp = new XMLHttpRequest();
-
-  xmlhttp.onreadystatechange = function() {
-    if(xmlhttp.readyState === 4 && xmlhttp.status === 200){
-      callback(xmlhttp.response);
-    }
-  };
-  xmlhttp.open(method, url, true);
-  xmlhttp.send(JSON.stringify(params));
-}
 
 function updateClickCount(params){
-  let body = {'title': params};
-  ajaxRequest('POST', testApiUrl, body, data => {
+  axios.post(testApiUrl, {
+    title: params
+  }).then(data => {
     console.log(data);
   });
 }
 
 function getClickCount(){
-  ajaxRequest('GET', testApiUrl, '', data => {
+  axios.get(testApiUrl).then(data => {
+    console.log(data);
+  });
+}
+
+function addPoll(pollName, options){
+  axios.post(apiUrl, {
+    title: pollName,
+    options: options
+  }).then(data => {
     console.log(data);
   })
 }
 
-function addPoll(){
-  ajaxRequest('GET', apiUrl, data => {
-    console.log(data);
+function getPolls(){
+  return new Promise((resolve, reject) => {
+    axios.get(apiUrl).then(res => {
+      resolve(res.data);
+    });
   })
 }
 
-module.exports = {
+export default {
   updateClickCount,
   getClickCount,
+  addPoll,
+  getPolls
 };

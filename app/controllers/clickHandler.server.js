@@ -5,21 +5,28 @@ function clickHandler(db){
     let polls = db.collection('polls');
 
     this.addPoll = function(req, res){
+        const title = req.body.title;
+        const options = req.body.options;
 
         polls.insertOne({
-
-        })
+          'title': title,
+          'options': options
+        }, (err, result) => {
+            if (err) throw err;
+            res.json(result);
+        });
 
     };
 
-    this.getPoll = function(req, res){
-
+    this.getPolls = function(req, res){
+        polls.find({}).toArray((error, docs) => {
+            if (error) throw error;
+            res.send(docs);
+        })
     };
 
 
     this.getClicks = function(req, res){
-        console.log(req.body);
-        console.log(req.params)
         const clickProjection = { '_id': false };
         clicks.findOne({}, clickProjection, function (err, result){
             if (err) throw err;
@@ -39,7 +46,6 @@ function clickHandler(db){
     };
 
     this.addClick = function(req, res){
-        console.log(req.body);
         clicks.findAndModify(
             {},
             { '_id': 1},

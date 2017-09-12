@@ -13,6 +13,6 @@ module.exports = function(app, db){
         .post(clickHandler.addClick)
         .delete(clickHandler.resetClicks);
     app.route('/api/polls')
-      .get(clickHandler.getPoll)
-      .post(clickHandler.addPoll);
+        .get(clickHandler.getPolls)
+        .post(clickHandler.addPoll);
 };

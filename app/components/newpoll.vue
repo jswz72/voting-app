@@ -16,6 +16,9 @@
 </template>
 
 <script>
+
+import gateway from '../controllers/clickController.client'
+
 export default {
   name: 'new-poll',
   data() {
@@ -39,7 +42,7 @@ export default {
       this.options.splice(index, 1);
     },
     submitPoll(){
-
+      gateway.addPoll(this.pollName, this.options);
     }
   }
 }
