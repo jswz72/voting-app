@@ -12,28 +12,35 @@
         </div>
         <div>
             <table align="center"class="table is-striped">
-                <tbody>
-                    <poll-item v-if="polls.length > 0" v-for="(item, index) in polls" :item="item" :index="index" :key="item.id"></poll-item>
-                    <tr v-if="polls.length == 0">No polls found!</tr>
+                <tbody v-if="polls.length > 0">
+                    <template v-for="poll in polls">
+                        <tr @click="select(poll.title)">{{poll.title}}</tr>
+                        <template v-if="poll.title === selected">
+                            <tr v-for="option in poll.options">{{option.name}}: {{option.votes}}</tr>
+                            <button @click="vote(poll.title, option.name)"></button>
+                        </template>
+                    </template>
                 </tbody>
+                <p v-else>No Polls Found!</p>
             </table>
         </div>
     </div>
 </template>
 
 <script>
-import PollItem from './poll-item.vue'
 
 export default {
   name: 'home',
-  components: {
-    PollItem,
-  },
   props: {
       polls: {
           type: Array,
           required: true,
       }
+  },
+  data(){
+    return {
+      selected: null
+    }
   },
   mounted(){
       console.log(this.polls.length);
@@ -41,6 +48,18 @@ export default {
   computed: {
     userSignedIn(){
       return true;
+    }
+  },
+  methods: {
+    select(pollName){
+      if(this.selected === pollName){
+        this.selected = null;
+      } else {
+        this.selected = pollName;
+      }
+    },
+    vote(pollName, optionName){
+
     }
   }
 }

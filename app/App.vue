@@ -14,7 +14,6 @@
             </nav>
         </header>
         <home v-if="isHome" :polls="polls"></home>
-        <button @click="test">Test it out</button>
         <sign-in v-if="isSignIn"></sign-in>
         <new-poll v-if="isNewPoll"></new-poll>
     </div>
@@ -43,6 +42,9 @@ export default {
             polls: []
         }
     },
+    mounted() {
+      this.getPolls();
+    },
     computed: {
       routerPath(){
         return this.$route.path;
@@ -61,8 +63,9 @@ export default {
       }
     },
     methods: {
-      test(){
+      getPolls(){
         gateway.getPolls().then(polls => {
+          console.log(polls);
           this.polls = polls;
         })
       }

@@ -1,6 +1,7 @@
 <template>
     <div id="poll-fields">
         <h1>Create New Poll</h1>
+        <h2 v-if="submitted">Poll Submitted!</h2>
         <div class="poll-field">
             <p>New Poll Name: </p>
             <input type="text" v-model="pollName">
@@ -26,25 +27,41 @@ export default {
       pollName: '',
       options: [
         {
-          name: ''
+          name: '',
+          votes: 0
         },
         {
-          name: ''
+          name: '',
+          votes: 0
         }
-      ]
+      ],
+      emptyOption: {
+        name: '',
+        votes: 0
+      },
+      submitted: false,
     }
   },
   methods: {
     newOption(){
-      this.options.push({name: ''});
+      this.options.push(this.emptyOption);
     },
     removeOption(index){
       this.options.splice(index, 1);
     },
     submitPoll(){
       gateway.addPoll(this.pollName, this.options);
+      this.clearPoll();
+      this.submitted = true;
+      window.setTimeout(()=>{
+        this.submitted = false;
+      }, 2000);
+    },
+    clearPoll(){
+      this.pollName = '';
+      this.options = [this.emptyOption, this.emptyOption];
     }
-  }
+  },
 }
 </script>
 
