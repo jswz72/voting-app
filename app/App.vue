@@ -1,88 +1,88 @@
 <template>
-    <div class="container">
-        <header>
-            <nav id="navbar" class=" is-horizontal">
-                <router-link to="/" class="button is-primary">
-                    FCC Voting App
-                </router-link>
-                <div id="dropdown">
-                    <button class="button is-success" id="dropbtn" @click="dropDownClicked = !dropDownClicked">
-                        SETTINGS
-                    </button>
-                    <drop-down v-if="dropDownClicked"></drop-down>
-                </div>
-            </nav>
-        </header>
-        <home v-if="isHome" :polls="polls"></home>
-        <sign-in v-if="isSignIn"></sign-in>
-        <new-poll v-if="isNewPoll"></new-poll>
-    </div>
+  <div class="container">
+    <header>
+      <nav id="navbar" class=" is-horizontal">
+        <router-link to="/" class="button is-primary">
+          FCC Voting App
+        </router-link>
+        <div id="dropdown">
+          <button class="button is-success" id="dropbtn" @click="dropDownClicked = !dropDownClicked">
+            SETTINGS
+          </button>
+          <drop-down v-if="dropDownClicked"></drop-down>
+        </div>
+      </nav>
+    </header>
+    <home v-if="isHome" :polls="polls"></home>
+    <sign-in v-if="isSignIn"></sign-in>
+    <new-poll v-if="isNewPoll"></new-poll>
+  </div>
 </template>
 
 <script>
-import DropDown from './components/dropdown.vue'
-import Home from './components/home.vue'
-import SignIn from './components/signin.vue'
-import NewPoll from './components/newpoll.vue'
+  import DropDown from './components/dropdown.vue'
+  import Home from './components/home.vue'
+  import SignIn from './components/signin.vue'
+  import NewPoll from './components/newpoll.vue'
 
-import gateway from './controllers/clickController.client'
+  import gateway from './controllers/clickController.client'
 
-export default {
+  export default {
     name: 'app',
     components: {
       NewPoll,
       DropDown,
       Home,
-      SignIn,
+      SignIn
     },
-    data() {
-        return {
-            dropDownClicked: false,
-            //test data
-            polls: []
-        }
+    data () {
+      return {
+        dropDownClicked: false,
+        //test data
+        polls: []
+      }
     },
-    mounted() {
+    mounted () {
       this.getPolls();
     },
     computed: {
-      routerPath(){
+      routerPath () {
         return this.$route.path;
       },
-      isHome(){
+      isHome () {
         return this.routerPath === '/';
       },
-      isSignIn(){
+      isSignIn () {
         return this.routerPath === '/signin'
       },
-      isProfile(){
+      isProfile () {
         return this.routerPath === '/profile'
       },
-      isNewPoll(){
+      isNewPoll () {
         return this.routerPath === '/newpoll'
       }
     },
     methods: {
-      getPolls(){
+      getPolls () {
         gateway.getPolls().then(polls => {
           console.log(polls);
           this.polls = polls;
         })
       }
     }
-}
+  }
 </script>
 
 <style lang="css">
-@import '~bulma/css/bulma.css';
+  @import '~bulma/css/bulma.css';
 
-nav {
+  nav {
     background-color: lightgray;
-}
+  }
 
-#dropdown {
-    float:right;
-}
+  #dropdown {
+    float: right;
+  }
 
 
 </style>

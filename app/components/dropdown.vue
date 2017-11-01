@@ -1,31 +1,30 @@
 <template>
-    <div id="dropdown-content">
-        <router-link class="dropitem" :to="{ path: 'signin'}">Sign In</router-link>
-        <router-link class="dropitem" :to="{ path: 'profile'}">Profile</router-link>
-    </div>
+  <div id="dropdown-content">
+    <router-link class="dropitem" :to="{ path: 'signin'}">Sign In</router-link>
+    <router-link class="dropitem" :to="{ path: 'profile'}">Profile</router-link>
+  </div>
 </template>
 
 <script>
-export default {
+  export default {
     name: 'drop-down',
-    data() {
-        return {
-        }
+    data () {
+      return {}
     }
-}
+  }
 
 </script>
 
 <style>
-#dropdown-content {
+  #dropdown-content {
 
-}
+  }
 
-#dropdown-content p {
+  #dropdown-content p {
     display: block;
-}
+  }
 
-.dropitem:hover{
+  .dropitem:hover {
     background-color: #f1f1f1;
-}
+  }
 </style>

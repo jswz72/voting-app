@@ -7,12 +7,12 @@ import NewPoll from './components/newpoll.vue'
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-    base: __dirname,
-    routes: [
-      { path: '/', component: Home },
-      { path: '/signin', component: SignIn },
-      { path: '/newpoll', component: NewPoll }
-    ]
+  base: __dirname,
+  routes: [
+    { path: '/', component: Home },
+    { path: '/signin', component: SignIn },
+    { path: '/newpoll', component: NewPoll }
+  ]
 });
 
 export default router;
