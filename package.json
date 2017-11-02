@@ -5,8 +5,8 @@
   "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --open --hot --inline",
-    "dev": "npm run build && node server.js",
+    "start": "webpack-dev-server --open --hot --inline --port 3000",
+    "dev": "node server.js",
     "build": "webpack",
     "lint": "eslint ./app --ext .js --ext .vue"
   },

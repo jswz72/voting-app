@@ -17,10 +17,7 @@
         <tbody v-if="polls.length > 0">
         <template v-for="poll in polls">
           <tr @click="select(poll.title)">{{poll.title}}</tr>
-          <template v-if="poll.title === selected">
-            <tr v-for="option in poll.options">{{option.name}}: {{option.votes}}</tr>
-            <button @click="vote(poll.title, option.name)"></button>
-          </template>
+
         </template>
         </tbody>
         <p v-else>No Polls Found!</p>
