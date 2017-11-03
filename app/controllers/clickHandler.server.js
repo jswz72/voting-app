@@ -1,7 +1,6 @@
 'use strict';
 
 function clickHandler (db) {
-  const clicks = db.collection('clicks');
   const polls = db.collection('polls');
 
   this.addPoll = (req, res) => {
@@ -24,20 +23,20 @@ function clickHandler (db) {
     })
   };
 
-  this.vote = (req,res) => {
-    const title = req.body.title
+  this.vote = (req, res) => {
+    const title = req.body.title;
     const voteOption = req.body.voteOption;
-    polls.aggregate([
-      { $project: {matchedIndex: {$indexOfArray: ["$options.name", voteOption]}}}
-    ], (err, result) => {
-      if (err) throw err;
-      const optionIndex = result[0].matchedIndex;
-      const option = `$options.${optionIndex}.votes`;
-      polls.findAndModify(
-        {"title": title},
-        { $inc: {option: 1}}
-      )
-    });
+    polls.findAndModify(
+      {
+        'title': title,
+        'options.name': voteOption
+      },
+      {},
+      { $inc: { 'options.$.votes': 1 }}, (err, result) => {
+        if (err) throw err;
+        console.log(`logging a vote for ${title} ${result}`);
+      }
+    )
   }
 }
 
