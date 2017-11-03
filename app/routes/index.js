@@ -1,6 +1,7 @@
 'use strict'
 
 const ClickHandler = require(process.cwd() + '/app/controllers/clickHandler.server.js')
+const apiUrl = '/api/polls';
 
 module.exports = function (app, db) {
   const clickHandler = new ClickHandler(db);
@@ -8,11 +9,9 @@ module.exports = function (app, db) {
     .get(function (req, res) {
       res.sendFile(process.cwd() + '/public/index.html');
     });
-  app.route('/api/clicks')
-    .get(clickHandler.getClicks)
-    .post(clickHandler.addClick)
-    .delete(clickHandler.resetClicks);
-  app.route('/api/polls')
+  app.route(apiUrl)
     .get(clickHandler.getPolls)
     .post(clickHandler.addPoll);
+  app.route('/api/polls/vote')
+    .post(clickHandler.vote);
 };

@@ -20,7 +20,7 @@
         <tbody v-if="polls.length > 0">
         <template v-for="poll in polls">
           <tr @click="select(poll.title)">{{poll.title}}</tr>
-
+          <poll-view v-if="isSelected(poll.title)" :poll="poll"></poll-view>
         </template>
         </tbody>
         <p v-else>No Polls Found!</p>
@@ -30,9 +30,12 @@
 </template>
 
 <script>
+  import PollView from './poll-view.vue'
   import controller from '../controllers/clickController.client'
+
   export default {
     name: 'home',
+    components: { PollView },
     data () {
       return {
         selected: null,
@@ -56,14 +59,14 @@
           this.selected = pollName;
         }
       },
-      vote (pollName, optionName) {
-
-      },
       getPolls () {
         controller.getPolls().then(polls => {
           console.log(polls);
           this.polls = polls;
         })
+      },
+      isSelected (item) {
+        return item === this.selected
       }
     }
   }
@@ -82,6 +85,13 @@
 
   #textbox p {
     font-size: 1.2em;
+  }
+
+  table {
+    width: 100%;
+    margin-top: 4%;
+    border: 1px #888888 solid;
+    box-shadow: 3px 3px 5px #888888 ;
   }
 
   tr {

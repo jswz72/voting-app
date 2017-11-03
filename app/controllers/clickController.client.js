@@ -1,18 +1,12 @@
 'use strict';
 const apiUrl = 'http://localhost:8080/api/polls';
-const testApiUrl = 'http://localhost:8080/api/clicks';
 import axios from 'axios';
 
-function updateClickCount (params) {
-  axios.post(testApiUrl, {
-    title: params
+function vote (pollName, voteOption) {
+  axios.post(apiUrl + '/vote', {
+    title: pollName,
+    voteOption: voteOption
   }).then(data => {
-    console.log(data);
-  });
-}
-
-function getClickCount () {
-  axios.get(testApiUrl).then(data => {
     console.log(data);
   });
 }
@@ -35,8 +29,7 @@ function getPolls () {
 }
 
 export default {
-  updateClickCount,
-  getClickCount,
+  vote,
   addPoll,
   getPolls
 };
