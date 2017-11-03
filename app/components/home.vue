@@ -5,8 +5,11 @@
         <h1>Free Code Camp Voting App</h1>
         <p>Select a poll to see the results and vote, or
           <span v-if="!userSignedIn">
-                        <router-link to="/signin">sign-in</router-link>to
-                    </span>
+            <router-link to="/signin">
+              sign-in
+            </router-link>
+            to
+          </span>
           make a
           <router-link v-if="userSignedIn" to="/newpoll">new poll</router-link>
         </p>
@@ -27,25 +30,22 @@
 </template>
 
 <script>
+  import controller from '../controllers/clickController.client'
   export default {
     name: 'home',
-    props: {
-      polls: {
-        type: Array,
-        required: true
-      }
-    },
     data () {
       return {
-        selected: null
+        selected: null,
+        polls: []
       }
     },
     mounted () {
       console.log(this.polls.length);
+      this.getPolls();
     },
     computed: {
       userSignedIn () {
-        return true;
+        return true; //test data
       }
     },
     methods: {
@@ -58,6 +58,12 @@
       },
       vote (pollName, optionName) {
 
+      },
+      getPolls () {
+        controller.getPolls().then(polls => {
+          console.log(polls);
+          this.polls = polls;
+        })
       }
     }
   }
