@@ -6,10 +6,11 @@ function clickHandler (db) {
   this.addPoll = (req, res) => {
     const title = req.body.title;
     const options = req.body.options;
-
+    const date = req.body.date;
     polls.insertOne({
       'title': title,
-      'options': options
+      'options': options,
+      'date': date
     }, (err, result) => {
       if (err) throw err;
       res.json(result);

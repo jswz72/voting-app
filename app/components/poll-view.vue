@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="poll-view">
+    <h1 id="poll-title">Vote on Poll: {{poll.title}}</h1>
     <ul>
       <li v-for="option in poll.options">
         {{option.name}}<input type="radio" :id="option.name" :value="option.name" v-model="voteOption">
@@ -25,7 +26,18 @@
     data () {
       return {
         voteOption: '',
-        userVoted: false
+        userVoted: false,
+        chartType: 'pie',
+        baseColors: [
+          'rgba(255, 99, 132',
+          'rgba(54, 162, 235',
+          'rgba(96, 255, 152',
+          'rgba(231, 96, 255',
+          'rgba(255, 220, 96',
+          'rgba(255, 181, 96',
+          'rgba(96, 255, 252',
+          'rgba(255, 96, 220'
+        ]
       }
     },
     mounted () {
@@ -37,6 +49,15 @@
       },
       votesPerLabel () {
         return this.poll.options.map(option => option.votes);
+      },
+      fillColors () {
+        return this.baseColors.map(color => color + ', 0.2)');
+      },
+      borderColors () {
+        return this.baseColors.map(color => color + ', 1.0)');
+      },
+      displayLegend () {
+        return this.chartType !== 'bar';
       }
     },
     methods: {
@@ -51,30 +72,20 @@
         const ctx = document.getElementById('chart');
         //eslint-disable-next-line
         let pollChart = new Chart(ctx, {
-          type: 'bar',
+          type: this.chartType,
           data: {
             labels: this.labels,
             datasets: [{
               label: '# of Votes',
               data: this.votesPerLabel,
-              backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)'
-              ],
-              borderColor: [
-                'rgba(255,99,132,1)',
-                'rgba(54, 162, 235, 1)'
-              ],
+              backgroundColor: this.fillColors.slice(0, this.labels.length),
+              borderColor: this.borderColors.slice(0, this.labels.length),
               borderWidth: 1
             }]
           },
           options: {
-            scales: {
-              yAxes: [{
-                ticks: {
-                  beginAtZero: true
-                }
-              }]
+            legend: {
+              display: this.displayLegend
             },
             responsive: false,
             maintainAspectRatio: false
@@ -84,3 +95,14 @@
     }
   }
 </script>
+
+<style>
+  .poll-view {
+    width: 100%;
+  }
+
+  #poll-title {
+    text-align: center;
+    font-size: 2em;
+  }
+</style>

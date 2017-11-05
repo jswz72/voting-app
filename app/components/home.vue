@@ -19,7 +19,7 @@
       <table align="center" class="table is-striped">
         <tbody v-if="polls.length > 0">
         <template v-for="poll in polls">
-          <tr @click="select(poll.title)">{{poll.title}}</tr>
+          <tr><td @click="select(poll.title)" :class="{'selected': isSelected(poll.title)}">{{poll.title}}<span class="time">{{poll.date | dateFormat}}</span></td></tr>
           <poll-view v-if="isSelected(poll.title)" :poll="poll"></poll-view>
         </template>
         </tbody>
@@ -49,6 +49,14 @@
     computed: {
       userSignedIn () {
         return true; //test data
+      }
+    },
+    filters: {
+      dateFormat: function (date) {
+        const dt = new Date(date);
+        const dtString = dt.toString().split(' ');
+        dtString.splice(5, 1);
+        return dtString.join(' ');
       }
     },
     methods: {
@@ -88,22 +96,28 @@
   }
 
   table {
-    width: 100%;
     margin-top: 4%;
     border: 1px #888888 solid;
     box-shadow: 3px 3px 5px #888888 ;
+    width: 100%;
+    display: table;
   }
 
-  tr {
+  td {
+    cursor: pointer;
     text-align: center;
     font-size: 1.5em;
   }
 
-  /*tr:nth-child(even) {
-      background-color: white;
+  .selected {
+    background-color: #ACCEF7;
   }
 
-  tr:nth-child(odd){
-      background-color: #e8ebef;
-  }*/
+  .selected:hover {
+    background-color: #ACCEF7 !important;
+  }
+
+  .time {
+    float: right;
+  }
 </style>
