@@ -16,15 +16,15 @@
       </div>
     </div>
     <div>
-      <table align="center" class="table is-striped">
-        <tbody v-if="polls.length > 0">
-        <template v-for="poll in polls">
-          <tr @click="select(poll.title)">{{poll.title}}</tr>
+      <table v-if="polls.length > 0" align="center" class="table is-striped">
+        <tbody>
+        <template v-for="poll in sortedPolls">
+          <tr><td style="padding-left:1.5em;" @click="select(poll.title)" :class="{'selected': isSelected(poll.title)}">{{poll.title}}<span class="time">{{poll.date | dateFormat}}</span></td></tr>
           <poll-view v-if="isSelected(poll.title)" :poll="poll"></poll-view>
         </template>
         </tbody>
-        <p v-else>No Polls Found!</p>
       </table>
+      <p v-else>No Polls Found!</p>
     </div>
   </div>
 </template>
@@ -49,6 +49,17 @@
     computed: {
       userSignedIn () {
         return true; //test data
+      },
+      sortedPolls () {
+        return this.polls.reverse();
+      }
+    },
+    filters: {
+      dateFormat: function (date) {
+        const dt = new Date(date);
+        const dtString = dt.toString().split(' ');
+        dtString.splice(5, 1);
+        return dtString.join(' ');
       }
     },
     methods: {
@@ -88,22 +99,36 @@
   }
 
   table {
-    width: 100%;
     margin-top: 4%;
     border: 1px #888888 solid;
     box-shadow: 3px 3px 5px #888888 ;
+    width: 100%;
+    display: table;
   }
 
-  tr {
+  td {
+    position: relative;
+    cursor: pointer;
     text-align: center;
     font-size: 1.5em;
+    padding: 40px;
   }
 
-  /*tr:nth-child(even) {
-      background-color: white;
+  .selected {
+    background-color: #bcdeff;
+    color: #828386;
   }
 
-  tr:nth-child(odd){
-      background-color: #e8ebef;
-  }*/
+  .selected:hover {
+    background-color: #bcdeff !important;
+  }
+
+  .time {
+    position: absolute;
+    float: right;
+    font-size:0.65em;
+    bottom: 0;
+    right: 0;
+    color: #;
+  }
 </style>

@@ -14,7 +14,8 @@ function vote (pollName, voteOption) {
 function addPoll (pollName, options) {
   axios.post(apiUrl, {
     title: pollName,
-    options: options
+    options: options,
+    date: Date.now()
   }).then(data => {
     console.log(data);
   })
