@@ -16,15 +16,15 @@
       </div>
     </div>
     <div>
-      <table align="center" class="table is-striped">
-        <tbody v-if="polls.length > 0">
-        <template v-for="poll in polls">
-          <tr><td @click="select(poll.title)" :class="{'selected': isSelected(poll.title)}">{{poll.title}}<span class="time">{{poll.date | dateFormat}}</span></td></tr>
+      <table v-if="polls.length > 0" align="center" class="table is-striped">
+        <tbody>
+        <template v-for="poll in sortedPolls">
+          <tr><td style="padding-left:1.5em;" @click="select(poll.title)" :class="{'selected': isSelected(poll.title)}">{{poll.title}}<span class="time">{{poll.date | dateFormat}}</span></td></tr>
           <poll-view v-if="isSelected(poll.title)" :poll="poll"></poll-view>
         </template>
         </tbody>
-        <p v-else>No Polls Found!</p>
       </table>
+      <p v-else>No Polls Found!</p>
     </div>
   </div>
 </template>
@@ -49,6 +49,9 @@
     computed: {
       userSignedIn () {
         return true; //test data
+      },
+      sortedPolls () {
+        return this.polls.reverse();
       }
     },
     filters: {
@@ -104,20 +107,28 @@
   }
 
   td {
+    position: relative;
     cursor: pointer;
     text-align: center;
     font-size: 1.5em;
+    padding: 40px;
   }
 
   .selected {
-    background-color: #ACCEF7;
+    background-color: #bcdeff;
+    color: #828386;
   }
 
   .selected:hover {
-    background-color: #ACCEF7 !important;
+    background-color: #bcdeff !important;
   }
 
   .time {
+    position: absolute;
     float: right;
+    font-size:0.65em;
+    bottom: 0;
+    right: 0;
+    color: #;
   }
 </style>
