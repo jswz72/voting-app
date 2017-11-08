@@ -20,7 +20,7 @@
       </div>
       <div class="chart-holder">
         <!--todo make chart component-->
-        <canvas v-if="totalVotes > 0" id="chart" width="250" height="250"></canvas>
+        <chart-view v-if="totalVotes > 0" :poll="poll" :chartType="chartType"></chart-view>
         <p v-else style="text-align: center;">No votes yet!</p>
       </div>
       <div>
@@ -40,10 +40,11 @@
 </template>
 
 <script>
+  import ChartView from './chart-view.vue'
   import controller from '../controllers/clickController.client'
-  import Chart from 'chart.js'
   export default {
     name: 'poll-view',
+    components: { ChartView },
     props: {
       poll: {
         type: Object,
@@ -54,41 +55,17 @@
       return {
         voteOption: '',
         userVoted: false,
-        chartType: 'pie',
-        baseColors: [
-          'rgba(255, 99, 132',
-          'rgba(54, 162, 235',
-          'rgba(96, 255, 152',
-          'rgba(231, 96, 255',
-          'rgba(255, 220, 96',
-          'rgba(255, 181, 96',
-          'rgba(96, 255, 252',
-          'rgba(255, 96, 220'
-        ],
-        charts: ['pie', 'doughnut', 'bar']
+        charts: ['pie', 'doughnut', 'bar'],
+        chartType: 'pie'
       }
     },
-    mounted () {
-      this.populateChart();
-    },
     computed: {
-      labels () {
-        return this.poll.options.map(option => option.name);
-      },
-      votesPerLabel () {
-        return this.poll.options.map(option => option.votes);
-      },
-      fillColors () {
-        return this.baseColors.map(color => color + ', 0.2)');
-      },
-      borderColors () {
-        return this.baseColors.map(color => color + ', 1.0)');
-      },
-      displayLegend () {
-        return this.chartType !== 'bar';
-      },
       totalVotes () {
-        return this.votesPerLabel.reduce((sum, val) => sum + val);
+        let votes = 0;
+        this.poll.options.forEach(option => {
+          votes += option.votes;
+        });
+        return votes;
       }
     },
     methods: {
@@ -100,38 +77,6 @@
         const option = this.poll.options.find(option => option.name === this.voteOption);
         option.votes++;
         this.userVoted = true;
-      },
-      populateChart () {
-        const ctx = document.getElementById('chart');
-        //eslint-disable-next-line
-        let pollChart = new Chart(ctx, {
-          type: this.chartType,
-          data: {
-            labels: this.labels,
-            datasets: [{
-              label: '# of Votes',
-              data: this.votesPerLabel,
-              backgroundColor: this.fillColors.slice(0, this.labels.length),
-              borderColor: this.borderColors.slice(0, this.labels.length),
-              borderWidth: 1
-            }]
-          },
-          options: {
-            legend: {
-              display: this.displayLegend
-            },
-            responsive: true,
-            maintainAspectRatio: false
-          }
-        })
-      }
-    },
-    watch: {
-      chartType () {
-        this.populateChart();
-      },
-      votesPerLabel () {
-        this.populateChart();
       }
     }
   }
