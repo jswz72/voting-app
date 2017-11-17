@@ -1,4 +1,5 @@
 'use strict';
+const schema = require('./mongooseSchema');
 
 function clickHandler (db) {
   const polls = db.collection('polls');
@@ -38,6 +39,34 @@ function clickHandler (db) {
         console.log(`logging a vote for ${title} ${result}`);
       }
     )
+  };
+
+  this.createUser = (req, res) => {
+    let userData = {
+      username: req.body.username,
+      password: req.body.password,
+    };
+
+    if (!userData.username || !userData.password) return;
+    console.log(userData.username, userData.password);
+
+    schema.User.create(userData, (err, user) => {
+      if (err) throw err;
+      else {
+        res.send(user);
+      }
+    })
+  };
+
+  this.authenticate = (req, res) => {
+    let username = req.body.username,
+      password = req.body.password;
+    schema.User.authenticate(username, password, (err, user) => {
+      if (err) throw err;
+      else {
+        res.send({authenticated: true});
+      }
+    })
   }
 }
 

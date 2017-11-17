@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --hot --inline --port 3000",
-    "dev": "node server.js",
+    "dev": "node ./app/Server/server.js",
     "build": "webpack",
     "lint": "eslint ./app --ext .js --ext .vue"
   },
@@ -24,6 +24,8 @@
   "dependencies": {
     "axios": "^0.17.0",
     "babel-core": "^6.26.0",
+    "bcrypt": "^1.0.3",
+    "body-parser": "^1.18.2",
     "bulma": "^0.5.1",
     "chart.js": "^2.7.1",
     "express": "^4.15.3",
