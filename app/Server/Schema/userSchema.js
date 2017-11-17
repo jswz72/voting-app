@@ -1,9 +1,4 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/voting-app', {
-  useMongoClient: true
-});
-mongoose.Promise = global.Promise;
-
 const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
@@ -43,13 +38,11 @@ userSchema.statics.authenticate = (username, password, callback) => {
       if (result) {
         return callback(null, user);
       } else {
-        return callback();
+        return callback(null, false);
       }
     })
   })
 }
 
 const User = mongoose.model('User', userSchema);
-module.exports = {
-  User
-};
+module.exports = User;

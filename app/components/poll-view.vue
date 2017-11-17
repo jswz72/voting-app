@@ -19,9 +19,8 @@
         <button class="button is-success" v-on:click="vote">Submit</button>
       </div>
       <div class="chart-holder">
-        <!--todo make chart component-->
-        <canvas v-if="totalVotes > 0" id="chart" width="250" height="250"></canvas>
-        <p v-else style="text-align: center;">No votes yet!</p>
+        <p v-if="totalVotes === 0" style="text-align: center;">No votes yet!</p>
+        <canvas id="chart" width="250" height="250"></canvas>
       </div>
       <div>
         <div class="field">
@@ -65,11 +64,12 @@
           'rgba(96, 255, 252',
           'rgba(255, 96, 220'
         ],
-        charts: ['pie', 'doughnut', 'bar']
+        charts: ['pie', 'doughnut', 'bar'],
+        chartInstance: null
       }
     },
     mounted () {
-      this.populateChart();
+      if (this.totalVotes > 0) this.populateChart();
     },
     computed: {
       labels () {
@@ -102,17 +102,18 @@
         this.userVoted = true;
       },
       populateChart () {
+        if (this.chartInstance) this.chartInstance.destroy();
         const ctx = document.getElementById('chart');
         //eslint-disable-next-line
-        let pollChart = new Chart(ctx, {
+        this.chartInstance = new Chart(ctx, {
           type: this.chartType,
           data: {
             labels: this.labels,
             datasets: [{
               label: '# of Votes',
               data: this.votesPerLabel,
-              backgroundColor: this.fillColors.slice(0, this.labels.length),
-              borderColor: this.borderColors.slice(0, this.labels.length),
+              backgroundColor: this.fillColors.slice(0, 2),
+              borderColor: this.borderColors.slice(0, 2),
               borderWidth: 1
             }]
           },

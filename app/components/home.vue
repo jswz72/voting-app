@@ -43,7 +43,6 @@
       }
     },
     mounted () {
-      console.log(this.polls.length);
       this.getPolls();
     },
     computed: {

@@ -1,20 +1,22 @@
 'use strict';
-const schema = require('./mongooseSchema');
+const User = require('./Schema/userSchema');
+const Poll = require('./Schema/pollSchema')
 
 function clickHandler (db) {
   const polls = db.collection('polls');
 
   this.addPoll = (req, res) => {
-    const title = req.body.title;
-    const options = req.body.options;
-    const date = req.body.date;
-    polls.insertOne({
-      'title': title,
-      'options': options,
-      'date': date
-    }, (err, result) => {
+    const poll = {
+      title: req.body.title,
+      options: req.body.options,
+      date: req.body.date
+    };
+
+    Poll.create(poll, (err, poll) => {
       if (err) throw err;
-      res.json(result);
+      else {
+        res.json(poll);
+      }
     });
   };
 
@@ -50,10 +52,10 @@ function clickHandler (db) {
     if (!userData.username || !userData.password) return;
     console.log(userData.username, userData.password);
 
-    schema.User.create(userData, (err, user) => {
+    User.create(userData, (err, user) => {
       if (err) throw err;
       else {
-        res.send(user);
+        res.send(user.username);
       }
     })
   };
@@ -61,10 +63,15 @@ function clickHandler (db) {
   this.authenticate = (req, res) => {
     let username = req.body.username,
       password = req.body.password;
-    schema.User.authenticate(username, password, (err, user) => {
-      if (err) throw err;
-      else {
-        res.send({authenticated: true});
+    User.authenticate(username, password, (err, user) => {
+      if (err) {
+        console.log(err);
+        res.send();
+      }
+      else if (user) {
+        res.send(user.username);
+      } else {
+        res.send();
       }
     })
   }

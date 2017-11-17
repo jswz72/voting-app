@@ -25,16 +25,20 @@
     },
     methods: {
       authenticate () {
-        controller.authenticate(this.username, this.password).then(res => {
-          if (res.authenticated) {
-            console.log('User authenticated!');
+        controller.authenticate(this.username, this.password).then(user => {
+          if (user) {
+            console.log(`Logged in ${user}`);
+          } else {
+            console.log('Wrong username or password');
           }
         })
       },
       createUser () {
-        controller.createUser(this.newUsername, this.newPassword).then(res => {
-          if (!res) {
+        controller.createUser(this.newUsername, this.newPassword).then(user => {
+          if (!user) {
             console.log('There was a problem singing up');
+          } else {
+            console.log(`Successfully signed up ${user}`);
           }
         });
       }
