@@ -21,6 +21,10 @@ const pollSchema = new mongoose.Schema({
   date: {
     type: Date,
     required: true
+  },
+  user: {
+    type: String,
+    required: true
   }
 });
 

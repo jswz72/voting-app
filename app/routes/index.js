@@ -1,22 +1,25 @@
 'use strict'
 
-const ClickHandler = require(process.cwd() + '/app/Server/clickHandler.server.js')
+const services = require(process.cwd() + '/app/Server/services.js');
 const API_URL = '/api';
 const POLL_URL = API_URL + '/polls';
 
 module.exports = function (app, db) {
-  const clickHandler = new ClickHandler(db);
+  const pollActions = new services.pollActions(db);
+  const userActions = new services.userActions();
   app.route('/')
-    .get(function (req, res) {
+    .get((req, res) => {
       res.sendFile(process.cwd() + '/public/index.html');
     });
   app.route(POLL_URL)
-    .get(clickHandler.getPolls)
-    .post(clickHandler.addPoll);
+    .get(pollActions.getPolls)
+    .post(userActions.requiresAuth, userActions.getUserName, pollActions.addPoll);
   app.route(`${POLL_URL}/vote`)
-    .post(clickHandler.vote);
+    .post(userActions.requiresAuth, pollActions.vote);
   app.route(`${API_URL}/signup`)
-    .post(clickHandler.createUser);
+    .post(userActions.createUser);
   app.route(`${API_URL}/login`)
-    .post(clickHandler.authenticate);
+    .post(userActions.authenticate);
+  app.route(`${API_URL}/logout`)
+    .post(userActions.logout);
 };

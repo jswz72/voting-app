@@ -4,14 +4,14 @@
       <div id="textbox" class="column is-half is-offset-one-quarter">
         <h1>Free Code Camp Voting App</h1>
         <p>Select a poll to see the results and vote, or
-          <span v-if="!userSignedIn">
+          <span v-if="!authenticated">
             <router-link to="/signin">
               sign-in
             </router-link>
             to
           </span>
           make a
-          <router-link v-if="userSignedIn" to="/newpoll">new poll</router-link>
+          <router-link v-if="authenticated" to="/newpoll">new poll</router-link>
         </p>
       </div>
     </div>
@@ -19,7 +19,7 @@
       <table v-if="polls.length > 0" align="center" class="table is-striped">
         <tbody>
         <template v-for="poll in sortedPolls">
-          <tr><td style="padding-left:1.5em;" @click="select(poll.title)" :class="{'selected': isSelected(poll.title)}">{{poll.title}}<span class="time">{{poll.date | dateFormat}}</span></td></tr>
+          <tr><td style="padding-left:1.5em;" @click="select(poll.title)" :class="{'selected': isSelected(poll.title)}">{{poll.title}}<span class="time">{{poll.user}}: {{poll.date | dateFormat}}</span></td></tr>
           <poll-view v-if="isSelected(poll.title)" :poll="poll"></poll-view>
         </template>
         </tbody>
@@ -31,11 +31,18 @@
 
 <script>
   import PollView from './poll-view.vue'
-  import controller from '../controllers/clickController.client'
+  import controller from '../controllers/controller'
 
   export default {
     name: 'home',
     components: { PollView },
+    props: {
+      authenticated: {
+        type: Boolean,
+        required: true,
+        default: false
+      }
+    },
     data () {
       return {
         selected: null,
@@ -46,9 +53,6 @@
       this.getPolls();
     },
     computed: {
-      userSignedIn () {
-        return true; //test data
-      },
       sortedPolls () {
         return this.polls.reverse();
       }

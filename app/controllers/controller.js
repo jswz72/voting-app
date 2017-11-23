@@ -7,6 +7,8 @@ function vote (pollName, voteOption) {
   return axios.post(POLL_URL + '/vote', {
     title: pollName,
     voteOption: voteOption
+  }, {
+    withCredentials: true
   }).then(data => {
     return data;
   }).catch(err => {
@@ -20,6 +22,8 @@ function addPoll (pollName, options) {
     title: pollName,
     options: options,
     date: Date.now()
+  }, {
+    withCredentials: true
   }).then(res => {
     return res.data;
   }).catch(err => {
@@ -29,7 +33,9 @@ function addPoll (pollName, options) {
 }
 
 function getPolls () {
-  return axios.get(POLL_URL).then(res => {
+  return axios.get(POLL_URL, {
+    withCredentials: true
+  }).then(res => {
     return res.data;
   }).catch(err => {
     console.log(err);
@@ -41,6 +47,8 @@ function authenticate (username, password) {
   return axios.post(API_URL + '/login', {
     username: username,
     password: password
+  }, {
+    withCredentials: true
   }).then(res => {
     return res.data;
   }).catch(err => {
@@ -53,7 +61,21 @@ function createUser (username, password) {
   return axios.post(API_URL + '/signup', {
     username: username,
     password: password
+  }, {
+    withCredentials: true
   }).then(res => {
+    return res.data;
+  }).catch(err => {
+    console.log(err);
+    return {};
+  })
+}
+
+function logout () {
+  return axios.post(API_URL + '/logout', {
+    withCredentials: true
+  }).then(res => {
+    console.log(res);
     return res.data;
   }).catch(err => {
     console.log(err);
@@ -66,5 +88,6 @@ export default {
   addPoll,
   getPolls,
   authenticate,
-  createUser
+  createUser,
+  logout
 };

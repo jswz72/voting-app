@@ -30,7 +30,7 @@ userSchema.statics.authenticate = (username, password, callback) => {
     .exec((err, user) => {
     if (err) return callback(err);
     else if (!user) {
-      let err = new Error('User not found.');
+      const err = new Error('User not found.');
       err.status = 401;
       return callback(err);
     }
@@ -42,7 +42,22 @@ userSchema.statics.authenticate = (username, password, callback) => {
       }
     })
   })
-}
+};
+
+userSchema.statics.getUserName = (userId, callback) => {
+  User.findOne({ _id: userId })
+    .exec((err, user) => {
+    console.log(user);
+    if (err) return callback(err);
+    else if (!user) {
+      const err = new Error('Username not found');
+      err.status = 404;
+      return callback(err);
+    } else {
+      return callback(null, user.username);
+    }
+    })
+};
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;

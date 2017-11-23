@@ -2,14 +2,17 @@
 const User = require('./Schema/userSchema');
 const Poll = require('./Schema/pollSchema')
 
-function clickHandler (db) {
+function pollActions (db) {
   const polls = db.collection('polls');
 
   this.addPoll = (req, res) => {
+    console.log('yes');
+
     const poll = {
       title: req.body.title,
       options: req.body.options,
-      date: req.body.date
+      date: req.body.date,
+      user: req.body.userName
     };
 
     Poll.create(poll, (err, poll) => {
@@ -36,12 +39,15 @@ function clickHandler (db) {
         'options.name': voteOption
       },
       {},
-      { $inc: { 'options.$.votes': 1 }}, (err, result) => {
+      {$inc: {'options.$.votes': 1}}, (err, result) => {
         if (err) throw err;
         console.log(`logging a vote for ${title} ${result}`);
       }
     )
   };
+}
+
+function userActions () {
 
   this.createUser = (req, res) => {
     let userData = {
@@ -50,11 +56,11 @@ function clickHandler (db) {
     };
 
     if (!userData.username || !userData.password) return;
-    console.log(userData.username, userData.password);
 
     User.create(userData, (err, user) => {
       if (err) throw err;
       else {
+        req.session.userId = user._id;
         res.send(user.username);
       }
     })
@@ -69,12 +75,56 @@ function clickHandler (db) {
         res.send();
       }
       else if (user) {
+        req.session.userId = user._id;
         res.send(user.username);
       } else {
         res.send();
       }
     })
-  }
+  };
+
+  this.logout = (req, res) => {
+    if (req.session) {
+      req.session.destroy(err => {
+        if (err) {
+          throw err;
+        }
+        else {
+          res.send(true);
+        }
+      })
+    }
+  };
+
+  this.requiresAuth = (req, res, next) => {
+    if (req.session && req.session.userId) {
+      next();
+    } else {
+      const err = new Error('Action requires authentication');
+      err.status = 401;
+      next(err);
+    }
+  };
+
+  this.getUserName = (req, res, next) => {
+    console.log('got fukn called');
+    const userId = req.session.userId;
+    User.getUserName(userId, (err, userName) => {
+      if (err) {
+        console.log(err);
+        next(err);
+      } else if (userName) {
+        console.log(userName);
+        req.body.userName = userName;
+        next();
+      }
+    });
+  };
+
 }
 
-module.exports = clickHandler;
+
+module.exports = {
+  pollActions,
+  userActions
+};

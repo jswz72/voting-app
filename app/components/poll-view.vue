@@ -39,7 +39,7 @@
 </template>
 
 <script>
-  import controller from '../controllers/clickController.client'
+  import controller from '../controllers/controller'
   import Chart from 'chart.js'
   export default {
     name: 'poll-view',

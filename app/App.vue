@@ -13,18 +13,38 @@
         </div>
       </nav>
     </header>
-    <router-view></router-view>
+    <router-view :authenticated="authenticated"></router-view>
   </div>
 </template>
 
 <script>
   import DropDown from './components/dropdown.vue'
+  import bus from './bus'
+
   export default {
     name: 'app',
     components: { DropDown },
     data () {
       return {
-        dropDownClicked: false
+        dropDownClicked: false,
+        authenticated: false
+      }
+    },
+    created () {
+      console.log(window.localStorage.getItem('authentication'));
+      this.getAuthentication();
+    },
+    mounted () {
+      bus.$on('authentication', this.authenticate);
+    },
+    methods: {
+      authenticate (authStatus) {
+        this.authenticated = authStatus;
+        window.localStorage.setItem('authentication', authStatus);
+      },
+      getAuthentication () {
+        const authentication = window.localStorage.getItem('authentication');
+        this.authenticated = !!authentication;
       }
     }
   }

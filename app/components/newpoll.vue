@@ -1,26 +1,38 @@
 <template>
-  <div id="poll-fields">
-    <h1>Create New Poll</h1>
-    <h2 v-if="submitted">Poll Submitted!</h2>
-    <div class="poll-field">
-      <p>New Poll Name: </p>
-      <input type="text" v-model="pollName">
+  <div>
+    <div v-if="authenticated" id="poll-fields">
+      <h1>Create New Poll</h1>
+      <h2 v-if="submitted">Poll Submitted!</h2>
+      <div class="poll-field">
+        <p>New Poll Name: </p>
+        <input type="text" v-model="pollName">
+      </div>
+      <div class="poll-field" v-for="(option, index) in options">
+        <p>Option {{index + 1}}: </p>
+        <input type="text" v-model="option.name">
+        <button class="button is-danger" @click="removeOption(index)">Remove Option</button>
+      </div>
+      <button class="button is-primary" @click="newOption">New Option</button>
+      <button class="button is-primary" @click="submitPoll">Submit Poll</button>
     </div>
-    <div class="poll-field" v-for="(option, index) in options">
-      <p>Option {{index + 1}}: </p>
-      <input type="text" v-model="option.name">
-      <button class="button is-danger" @click="removeOption(index)">Remove Option</button>
+    <div v-else>
+      <p>Must be logged in to create new poll!</p>
     </div>
-    <button class="button is-primary" @click="newOption">New Option</button>
-    <button class="button is-primary" @click="submitPoll">Submit Poll</button>
   </div>
 </template>
 
 <script>
-  import gateway from '../controllers/clickController.client'
+  import gateway from '../controllers/controller'
 
   export default {
     name: 'new-poll',
+    props: {
+      authenticated: {
+        type: Boolean,
+        required: true,
+        default: false
+      }
+    },
     data () {
       return {
         pollName: '',
