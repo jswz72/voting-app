@@ -48,11 +48,11 @@ module.exports = {
     hot: true,
     inline: true,
 
-    host: 'localhost',
+    host: '192.168.38.53',
     port: 3000,
     proxy: {
       '^/api/*': {
-        target: 'http://localhost:8080/api',
+        target: 'http://192.168.38.53:8080/api',
         secure: false
       }
     }

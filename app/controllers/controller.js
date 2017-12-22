@@ -1,6 +1,6 @@
 'use strict';
 import axios from 'axios';
-const API_URL = 'http://localhost:8080/api';
+const API_URL = 'http://192.168.38.53:8080/api';
 const POLL_URL = API_URL + '/polls'
 
 function vote (pollName, voteOption) {
