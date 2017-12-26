@@ -31,7 +31,6 @@
       }
     },
     created () {
-      console.log(window.localStorage.getItem('authentication'));
       this.getAuthentication();
     },
     mounted () {
@@ -44,7 +43,11 @@
       },
       getAuthentication () {
         const authentication = window.localStorage.getItem('authentication');
-        this.authenticated = !!authentication;
+        const authValid = JSON.parse(authentication);
+        if (authValid) {
+          this.authenticated = authValid;
+        }
+        console.log(this.authenticated);
       }
     }
   }

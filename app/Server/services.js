@@ -1,6 +1,7 @@
 'use strict';
 const User = require('./Schema/userSchema');
-const Poll = require('./Schema/pollSchema')
+const Poll = require('./Schema/pollSchema');
+const Profile = require('./Schema/profileSchema');
 
 function pollActions (db) {
   const polls = db.collection('polls');
@@ -42,6 +43,7 @@ function pollActions (db) {
       {$inc: {'options.$.votes': 1}}, (err, result) => {
         if (err) throw err;
         console.log(`logging a vote for ${title} ${result}`);
+        next();
       }
     )
   };
@@ -120,6 +122,18 @@ function userActions () {
       }
     });
   };
+
+  this.updateProfile = (req, res) => {
+    const data = {
+      title: req.body.title,
+      voteOptions: req.body.voteOption,
+      userName: req.body.userName,
+      date: req.body.date
+    }
+    //add to profile if found, create new if not
+    //figure out how to use
+    Profile.fildOneAndUpdate({ 'userName': data.userName }, data, { 'upsert': true }, (err, result) )
+  }
 
 }
 

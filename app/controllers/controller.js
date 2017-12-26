@@ -6,7 +6,8 @@ const POLL_URL = API_URL + '/polls'
 function vote (pollName, voteOption) {
   return axios.post(POLL_URL + '/vote', {
     title: pollName,
-    voteOption: voteOption
+    voteOption: voteOption,
+    date: Date.now()
   }, {
     withCredentials: true
   }).then(data => {

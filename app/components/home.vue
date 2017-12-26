@@ -24,7 +24,7 @@
         </template>
         </tbody>
       </table>
-      <p v-else>No Polls Found!</p>
+      <p v-else>{{emptyMessage}}</p>
     </div>
   </div>
 </template>
@@ -46,7 +46,8 @@
     data () {
       return {
         selected: null,
-        polls: []
+        polls: [],
+        emptyMessage: ''
       }
     },
     mounted () {
@@ -74,9 +75,15 @@
         }
       },
       getPolls () {
+        this.emptyMessage = 'Loading...';
         controller.getPolls().then(polls => {
-          console.log(polls);
-          this.polls = polls;
+          if (polls.length === 0) {
+            this.emptyMessage = 'No Polls Found';
+          } else {
+            this.emptyMessage = '';
+            console.log(polls);
+            this.polls = polls;
+          }
         })
       },
       isSelected (item) {
