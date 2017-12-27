@@ -31,7 +31,7 @@ function pollActions (db) {
     })
   };
 
-  this.vote = (req, res) => {
+  this.vote = (req, res, next) => {
     const title = req.body.title;
     const voteOption = req.body.voteOption;
     polls.findAndModify(
@@ -109,7 +109,6 @@ function userActions () {
   };
 
   this.getUserName = (req, res, next) => {
-    console.log('got fukn called');
     const userId = req.session.userId;
     User.getUserName(userId, (err, userName) => {
       if (err) {
@@ -126,16 +125,30 @@ function userActions () {
   this.updateProfile = (req, res) => {
     const data = {
       title: req.body.title,
-      voteOptions: req.body.voteOption,
+      voteOption: req.body.voteOption,
       userName: req.body.userName,
       date: req.body.date
     }
     //add to profile if found, create new if not
     //figure out how to use
-    Profile.fildOneAndUpdate({ 'userName': data.userName }, data, { 'upsert': true }, (err, result) )
+    Profile.findOneAndUpdate({ 'userName': data.userName },
+      {
+        $push: {
+          votes: {
+            poll: data.title,
+            vote: data.voteOption,
+            date: data.date
+          }
+        }
+      },
+      { 'upsert': true }, (err, result) => {
+        if (err) return err;
+        else {
+          res.send(result);
+        }
+      })
+    }
   }
-
-}
 
 
 module.exports = {

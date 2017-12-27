@@ -11,10 +11,9 @@ function vote (pollName, voteOption) {
   }, {
     withCredentials: true
   }).then(data => {
-    return data;
+    console.log(data);
   }).catch(err => {
     console.log(err);
-    return {};
   })
 }
 
