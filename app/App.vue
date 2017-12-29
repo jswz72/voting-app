@@ -20,6 +20,7 @@
 <script>
   import DropDown from './components/dropdown.vue'
   import bus from './bus'
+  import controller from './controllers/controller';
 
   export default {
     name: 'app',
@@ -35,6 +36,9 @@
     },
     mounted () {
       bus.$on('authentication', this.authenticate);
+      if (this.authenticated) {
+        this.getProfile();
+      }
     },
     methods: {
       authenticate (authStatus) {
@@ -47,7 +51,16 @@
         if (authValid) {
           this.authenticated = authValid;
         }
-        console.log(this.authenticated);
+      },
+      //TODO improve so doesn't call every time load
+      getProfile () {
+        controller.getProfile().then(res => {
+          if (res) {
+            const profileString = JSON.stringify(res);
+            console.log(profileString);
+            window.localStorage.setItem('profile', profileString);
+          }
+        })
       }
     }
   }

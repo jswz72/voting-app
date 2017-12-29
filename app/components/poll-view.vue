@@ -1,5 +1,11 @@
 <template>
   <div class="poll-view">
+    <div v-if="userVoted && showVoteWarning" class="vote-warning">
+      <p class="warning">You've already voted in this poll!</p>
+      <span class="warning-x button is-danger is-inverted is-small" @click="showVoteWarning = false">
+        <i class="fa fa-times"></i>
+      </span>
+    </div>
     <h1 id="poll-title">Vote on Poll: {{poll.title}}</h1>
     <div class="holder">
       <div class="options">
@@ -53,6 +59,7 @@
       return {
         voteOption: '',
         userVoted: false,
+        showVoteWarning: false,
         chartType: 'pie',
         baseColors: [
           'rgba(255, 99, 132',
@@ -100,10 +107,11 @@
           if (res) {
             const option = this.poll.options.find(option => option.name === this.voteOption);
             option.votes++;
-            this.userVoted = true;
           } else {
             console.log('User already voted in this poll');
+            this.showVoteWarning = true;
           }
+          this.userVoted = true;
         });
       },
       populateChart () {
@@ -165,4 +173,20 @@
     height: 250px;
     width: 250px;
   }
+  .vote-warning {
+    text-align: center;
+    background-color:red;
+    color: white;
+    font-size: 1.5em;
+  }
+  .warning {
+    display: inline-block;
+  }
+  .warning-x {
+    float: right;
+    margin-right: 0.25em;
+    height: 1.5em;
+    width: 1.5em;
+  }
+  
 </style>

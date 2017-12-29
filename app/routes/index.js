@@ -3,6 +3,7 @@
 const services = require(process.cwd() + '/app/Server/Services/index');
 const API_URL = '/api';
 const POLL_URL = API_URL + '/polls';
+const PROFILE_URL = API_URL + '/profile';
 
 module.exports = function (app, db) {
   app.route('/')
@@ -20,4 +21,6 @@ module.exports = function (app, db) {
     .post(services.user.authenticate);
   app.route(`${API_URL}/logout`)
     .post(services.user.logout);
+  app.route(PROFILE_URL)
+    .get(services.user.requiresAuth, services.user.getUserName, services.user.getProfile);
 };

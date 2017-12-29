@@ -19,7 +19,11 @@
       <table v-if="polls.length > 0" align="center" class="table is-striped">
         <tbody>
         <template v-for="poll in sortedPolls">
-          <tr><td style="padding-left:1.5em;" @click="select(poll.title)" :class="{'selected': isSelected(poll.title)}">{{poll.title}}<span class="time">{{poll.user}}: {{poll.date | dateFormat}}</span></td></tr>
+          <tr>
+            <td style="padding-left:1.5em;" @click="select(poll.title)" :class="{'selected': isSelected(poll.title)}">
+              {{poll.title}}<span class="time">{{poll.user}}: {{poll.date | dateFormat}}</span>
+            </td>
+          </tr>
           <poll-view v-if="isSelected(poll.title)" :poll="poll"></poll-view>
         </template>
         </tbody>

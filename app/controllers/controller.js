@@ -2,7 +2,18 @@
 
 import axios from 'axios';
 const API_URL = 'http://localhost:8080/api';
-const POLL_URL = API_URL + '/polls'
+const POLL_URL = API_URL + '/polls';
+const PROFILE_URL = API_URL + '/profile';
+
+export default {
+  addPoll,
+  authenticate,
+  createUser,
+  getPolls,
+  getProfile,
+  logout,
+  vote
+};
 
 function vote (pollName, voteOption) {
   return axios.post(POLL_URL + '/vote', {
@@ -87,11 +98,13 @@ function logout () {
   })
 }
 
-export default {
-  vote,
-  addPoll,
-  getPolls,
-  authenticate,
-  createUser,
-  logout
-};
+function getProfile (user) {
+  return axios.get(PROFILE_URL, {
+    withCredentials: true
+  }).then(res => {
+    return res.data;
+  }).catch(err => {
+    console.log(err);
+    return {};
+  })
+}

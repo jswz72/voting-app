@@ -6,6 +6,7 @@ module.exports = {
   checkVote,
   createUser,
   getUserName,
+  getProfile,
   logout,
   requiresAuth,
   updateProfile,
@@ -146,4 +147,22 @@ function checkVote (req, res, next) {
       }
     }
   });
+}
+
+function getProfile (req, res) {
+  Profile.findOne({
+    userName: req.body.userName
+  }, (err, result) => {
+    if (err) {
+      console.log(err);
+      return err;
+    } else {
+      console.log(result);
+      if (!result) {
+        res.send(result);
+      } else {
+        res.send(result.votes);
+      }
+    }
+  })
 }
