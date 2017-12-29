@@ -1,8 +1,9 @@
 const Poll = require('../Schema/pollSchema');
-//TODO remove db dependecies and calls
 
 module.exports = {
-
+  addPoll,
+  getPolls,
+  vote
 }
 
 function addPoll (req, res) {
@@ -22,8 +23,7 @@ function addPoll (req, res) {
 };
 
 function getPolls (req, res) {
-  //TODO
-  polls.find({}).toArray((error, docs) => {
+  Poll.find().exec((error, docs) => {
     if (error) throw error;
     res.send(docs);
   })
@@ -32,16 +32,14 @@ function getPolls (req, res) {
 function vote (req, res, next) {
   const title = req.body.title;
   const voteOption = req.body.voteOption;
-  //TODO
-  polls.findAndModify(
+  Poll.findOneAndUpdate(
     {
       'title': title,
       'options.name': voteOption
     },
-    {},
     {$inc: {'options.$.votes': 1}}, (err, result) => {
       if (err) throw err;
-      console.log(`logging a vote for ${title} ${result}`);
+      console.log(`logging a vote for ${title} ${voteOption}`);
       next();
     }
   )

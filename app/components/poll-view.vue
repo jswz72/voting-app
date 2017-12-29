@@ -96,10 +96,15 @@
         if (this.voteOption === '') {
           return;
         }
-        controller.vote(this.poll.title, this.voteOption);
-        const option = this.poll.options.find(option => option.name === this.voteOption);
-        option.votes++;
-        this.userVoted = true;
+        controller.vote(this.poll.title, this.voteOption).then(res => {
+          if (res) {
+            const option = this.poll.options.find(option => option.name === this.voteOption);
+            option.votes++;
+            this.userVoted = true;
+          } else {
+            console.log('User already voted in this poll');
+          }
+        });
       },
       populateChart () {
         if (this.chartInstance) this.chartInstance.destroy();

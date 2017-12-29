@@ -15,6 +15,7 @@ function vote (pollName, voteOption) {
     if (res.data.voted) {
       console.log('User already voted !');
     }
+    return !res.data.voted;
   }).catch(err => {
     console.log(err);
   })

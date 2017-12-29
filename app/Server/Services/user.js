@@ -114,7 +114,6 @@ function updateProfile (req, res) {
             }
           ]
         }, (err, result) => {
-          console.log('fucking fuck');
           if (err) {
             console.log(err);
             return err;
