@@ -1,25 +1,23 @@
 'use strict'
 
-const services = require(process.cwd() + '/app/Server/services.js');
+const services = require(process.cwd() + '/app/Server/Services/index');
 const API_URL = '/api';
 const POLL_URL = API_URL + '/polls';
 
 module.exports = function (app, db) {
-  const pollActions = new services.pollActions(db);
-  const userActions = new services.userActions();
   app.route('/')
     .get((req, res) => {
       res.sendFile(process.cwd() + '/public/index.html');
     });
   app.route(POLL_URL)
-    .get(pollActions.getPolls)
-    .post(userActions.requiresAuth, userActions.getUserName, pollActions.addPoll);
+    .get(services.poll.getPolls)
+    .post(services.user.requiresAuth, services.user.getUserName, services.poll.addPoll);
   app.route(`${POLL_URL}/vote`)
-    .post(userActions.requiresAuth, userActions.getUserName, pollActions.vote, userActions.updateProfile);
+    .post(services.user.requiresAuth, services.user.getUserName, services.user.checkVote, services.poll.vote, services.user.updateProfile);
   app.route(`${API_URL}/signup`)
-    .post(userActions.createUser);
+    .post(services.user.createUser);
   app.route(`${API_URL}/login`)
-    .post(userActions.authenticate);
+    .post(services.user.authenticate);
   app.route(`${API_URL}/logout`)
-    .post(userActions.logout);
+    .post(services.user.logout);
 };

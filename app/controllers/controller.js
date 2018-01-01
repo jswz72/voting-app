@@ -1,4 +1,5 @@
 'use strict';
+
 import axios from 'axios';
 const API_URL = 'http://localhost:8080/api';
 const POLL_URL = API_URL + '/polls'
@@ -10,8 +11,11 @@ function vote (pollName, voteOption) {
     date: Date.now()
   }, {
     withCredentials: true
-  }).then(data => {
-    console.log(data);
+  }).then(res => {
+    if (res.data.voted) {
+      console.log('User already voted !');
+    }
+    return !res.data.voted;
   }).catch(err => {
     console.log(err);
   })

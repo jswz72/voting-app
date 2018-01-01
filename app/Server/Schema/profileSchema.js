@@ -12,7 +12,7 @@ const profileSchema = new mongoose.Schema({
     {
       poll: {
         type: String,
-        required: true
+        required: true,
       },
       vote: {
         type: String,
@@ -25,6 +25,24 @@ const profileSchema = new mongoose.Schema({
     }
   ]
 });
+
+profileSchema.statics.getVote = (userName, pollName, callback) => {
+  Profile.findOne(
+    {
+      userName: userName,
+      votes: {
+        $elemMatch: { poll: pollName }
+      }
+    }, (err, result) => {
+      if (err) {
+        return callback(err);
+      }
+      else {
+        return callback(null, result);
+      }
+    }
+  )
+}
 
 const Profile = mongoose.model('Profile', profileSchema);
 module.exports = Profile;
