@@ -10,6 +10,49 @@ module.exports = {
   logout,
   requiresAuth,
   updateProfile,
+};
+
+/**
+ * Authenticate pre-created user.  Add id to session if found.
+ * Return empty if username/password failure, return username if successful.
+ *
+ * @param req
+ * @param res
+ */
+function authenticate (req, res) {
+  let username = req.body.username,
+    password = req.body.password;
+  User.authenticate(username, password, (err, user) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send();
+    }
+    else if (user) {
+      req.session.userId = user._id;
+      res.send({username: user.username});
+    } else {
+      res.status(401).send();
+    }
+  })
+};
+
+function checkVote (req, res, next) {
+  const userName = req.body.userName,
+    title = req.body.title;
+  Profile.getVote(userName, title, (err, result) => {
+    if (err) {
+      console.log(err);
+      return err;
+    }
+    else {
+      console.log(result);
+      if (!result) {
+        next();
+      } else {
+        res.send({ voted: true });
+      }
+    }
+  });
 }
 
 function createUser (req, res) {
@@ -29,22 +72,37 @@ function createUser (req, res) {
   })
 };
 
-function authenticate (req, res) {
-  let username = req.body.username,
-    password = req.body.password;
-  User.authenticate(username, password, (err, user) => {
+function getUserName (req, res, next) {
+  const userId = req.session.userId;
+  User.getUserName(userId, (err, userName) => {
     if (err) {
       console.log(err);
-      res.send();
+      next(err);
+    } else if (userName) {
+      console.log(userName);
+      req.body.userName = userName;
+      next();
     }
-    else if (user) {
-      req.session.userId = user._id;
-      res.send(user.username);
+  });
+};
+
+function getProfile (req, res) {
+  Profile.findOne({
+    userName: req.body.userName
+  }, (err, result) => {
+    if (err) {
+      console.log(err);
+      return err;
     } else {
-      res.send();
+      console.log(result);
+      if (!result) {
+        res.send(result);
+      } else {
+        res.send(result.votes);
+      }
     }
   })
-};
+}
 
 function logout (req, res) {
   if (req.session) {
@@ -67,20 +125,6 @@ function requiresAuth (req, res, next) {
     err.status = 401;
     next(err);
   }
-};
-
-function getUserName (req, res, next) {
-  const userId = req.session.userId;
-  User.getUserName(userId, (err, userName) => {
-    if (err) {
-      console.log(err);
-      next(err);
-    } else if (userName) {
-      console.log(userName);
-      req.body.userName = userName;
-      next();
-    }
-  });
 };
 
 function updateProfile (req, res) {
@@ -129,40 +173,3 @@ function updateProfile (req, res) {
     }
   );
 };
-
-function checkVote (req, res, next) {
-  const userName = req.body.userName,
-    title = req.body.title;
-  Profile.getVote(userName, title, (err, result) => {
-    if (err) {
-      console.log(err);
-      return err;
-    }
-    else {
-      console.log(result);
-      if (!result) {
-        next();
-      } else {
-        res.send({ voted: true });
-      }
-    }
-  });
-}
-
-function getProfile (req, res) {
-  Profile.findOne({
-    userName: req.body.userName
-  }, (err, result) => {
-    if (err) {
-      console.log(err);
-      return err;
-    } else {
-      console.log(result);
-      if (!result) {
-        res.send(result);
-      } else {
-        res.send(result.votes);
-      }
-    }
-  })
-}

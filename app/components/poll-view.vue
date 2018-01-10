@@ -105,11 +105,13 @@
         }
         controller.vote(this.poll.title, this.voteOption).then(res => {
           if (res) {
-            const option = this.poll.options.find(option => option.name === this.voteOption);
-            option.votes++;
-          } else {
-            console.log('User already voted in this poll');
-            this.showVoteWarning = true;
+            if (!res.voted) {
+              const option = this.poll.options.find(option => option.name === this.voteOption);
+              option.votes++;
+            } else {
+              console.log('User already voted in this poll');
+              this.showVoteWarning = true;
+            }
           }
           this.userVoted = true;
         });

@@ -27,13 +27,15 @@
     },
     methods: {
       authenticate () {
-        controller.authenticate(this.username, this.password).then(user => {
+        controller.authenticate(this.username, this.password).then(res => {
           this.username = this.password = '';
-          if (user) {
-            console.log(`Logged in ${user}`);
+          if (res.username) {
+            console.log('success');
+            //Show successfully logged in
             bus.$emit('authentication', true);
           } else {
-            console.log('Wrong username or password');
+            console.log('fail');
+            //Show wrong username or password
           }
         })
       },
