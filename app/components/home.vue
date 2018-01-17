@@ -24,7 +24,7 @@
               {{poll.title}}<span class="time">{{poll.user}}: {{poll.date | dateFormat}}</span>
             </td>
           </tr>
-          <poll-view v-if="isSelected(poll.title)" :poll="poll"></poll-view>
+          <poll-view v-if="isSelected(poll.title)" :poll="poll" :authenticated="authenticated"></poll-view>
         </template>
         </tbody>
       </table>
@@ -85,7 +85,6 @@
             this.emptyMessage = 'No Polls Found';
           } else {
             this.emptyMessage = '';
-            console.log(polls);
             this.polls = polls;
           }
         })
