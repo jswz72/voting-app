@@ -3,7 +3,7 @@
     <ul>
       <router-link class="dropitem" v-if="!$parent.authenticated" :to="{ path: 'signin'}" tag="li">Sign In</router-link>
       <router-link class="dropitem" v-else :to="{ path: 'profile'}" tag="li">Profile</router-link>
-      <li @click="logout">Log Out</li>
+      <li v-if="$parent.authenticated" @click="logout">Log Out</li>
     </ul>
   </div>
 </template>

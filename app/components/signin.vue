@@ -1,13 +1,19 @@
 <template>
-  <div>
-    Already signed up?
-    <input v-model.trim="username" placeholder="Username">
-    <input v-model="password" placeholder="Password" type="password" @keyup.enter="authenticate">
-    <button class="button is-info" @click="authenticate">Submit</button>
-    First time?
-    <input v-model.trim="newUsername" placeholder="Username">
-    <input v-model="newPassword" placeholder="Password" type="password" @keyup.enter="createUser">
-    <button class="button is-info" @click="createUser">Submit</button>
+  <div class="signin-page">
+    <div class="signin">
+      <p class="input-heading">Already signed up?</p>
+      <input v-model.trim="username" placeholder="Username">
+      <input v-model="password" placeholder="Password" type="password" @keyup.enter="authenticate">
+      <button class="button is-info" @click="authenticate">Submit</button>
+    </div>
+    <div class="signup">
+      <p class="input-heading">First time?</p>
+      <input v-model.trim="newUsername" placeholder="Username">
+      <input v-model="newPassword" placeholder="Password" type="password" @keyup.enter="createUser">
+	  <input v-model="confirmedPassword" placeholder="Confirm Password" type="password" @keyup.enter="createUser">
+      <button class="button is-info" @click="createUser">Submit</button>
+	  <p v-if="newPassword !== confirmedPassword">Passwords do not match!</p>
+    </div>
   </div>
 </template>
 
@@ -22,7 +28,8 @@
         username: '',
         password: '',
         newUsername: '',
-        newPassword: ''
+        newPassword: '',
+        confirmedPassword: ''
       }
     },
     methods: {
@@ -38,6 +45,9 @@
         })
       },
       createUser () {
+        if (this.confirmedPassword !== this.newPassword) {
+          return;
+		}
         controller.createUser(this.newUsername, this.newPassword).then(user => {
           this.newUsername = this.newPassword = '';
           if (!user) {
@@ -53,5 +63,13 @@
 </script>
 
 <style>
+.signin-page {
+  padding: 3%;
+  text-align: center;
+}
+.input-heading {
+  padding: 2%;
+  font-size:1.5em;
+}
 
 </style>
