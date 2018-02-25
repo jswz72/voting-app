@@ -30,9 +30,7 @@ userSchema.statics.authenticate = (username, password, callback) => {
     .exec((err, user) => {
     if (err) return callback(err);
     else if (!user) {
-      const err = new Error('User not found.');
-      err.status = 401;
-      return callback(err);
+      return callback(null, false); //username not found same response as wrong password
     }
     bcrypt.compare(password, user.password, (err, result) => {
       if (result) {

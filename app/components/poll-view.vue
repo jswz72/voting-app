@@ -1,7 +1,8 @@
 <template>
   <div class="poll-view">
-    <div v-if="userVoted && showVoteWarning" class="vote-warning">
-      <p class="warning">You've already voted in this poll!</p>
+    <div v-if="showVoteWarning" class="vote-warning">
+      <p class="warning" v-if="userVoted">You've already voted in this poll!</p>
+      <p class="warning" v-if="!authenticated">Please sign-in to vote!</p>
       <span class="warning-x button is-danger is-inverted is-small" @click="showVoteWarning = false">
         <i class="fa fa-times"></i>
       </span>
@@ -53,6 +54,11 @@
       poll: {
         type: Object,
         required: true
+      },
+      authenticated: {
+        type: Boolean,
+        required: true,
+        default: false
       }
     },
     data () {
@@ -102,14 +108,19 @@
       vote () {
         if (this.voteOption === '') {
           return;
+        } else if (!this.authenticated) {
+          this.showVoteWarning = true;
+          return;
         }
         controller.vote(this.poll.title, this.voteOption).then(res => {
           if (res) {
-            const option = this.poll.options.find(option => option.name === this.voteOption);
-            option.votes++;
-          } else {
-            console.log('User already voted in this poll');
-            this.showVoteWarning = true;
+            if (!res.voted) {
+              const option = this.poll.options.find(option => option.name === this.voteOption);
+              option.votes++;
+            } else {
+              console.log('User already voted in this poll');
+              this.showVoteWarning = true;
+            }
           }
           this.userVoted = true;
         });
