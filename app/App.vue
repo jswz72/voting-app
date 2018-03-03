@@ -13,22 +13,27 @@
         </div>
       </nav>
     </header>
+    <message :message="message" :status="messageStatus" :showMessage="showMessage"></message>
     <router-view :authenticated="authenticated"></router-view>
   </div>
 </template>
 
 <script>
   import DropDown from './components/dropdown.vue'
+  import Message from './components/message.vue'
   import bus from './bus'
   import controller from './controllers/controller';
 
   export default {
     name: 'app',
-    components: { DropDown },
+    components: { DropDown, Message },
     data () {
       return {
         dropDownClicked: false,
-        authenticated: false
+        authenticated: false,
+        showMessage: false,
+        message: '',
+        messageStatus: true
       }
     },
     created () {
@@ -44,6 +49,12 @@
       authenticate (authStatus) {
         this.authenticated = authStatus;
         window.localStorage.setItem('authentication', authStatus);
+        this.message = authStatus ? 'Logged in!' : 'Logged out!';
+        this.messageStatus = true;
+        this.showMessage = true;
+        setTimeout(() => {
+          this.showMessage = false
+        }, 2000);
       },
       getAuthentication () {
         const authentication = window.localStorage.getItem('authentication');

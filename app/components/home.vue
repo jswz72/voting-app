@@ -1,8 +1,5 @@
 <template>
   <div>
-    <div v-if="showMessage" class="vote-warning">
-      <p class="warning">{{message}}</p>
-    </div>
     <div>
       <div id="textbox" class="column is-half is-offset-one-quarter">
         <h1>Free Code Camp Voting App</h1>
@@ -39,7 +36,6 @@
 <script>
   import PollView from './poll-view.vue'
   import controller from '../controllers/controller'
-  import bus from '../bus'
 
   export default {
     name: 'home',
@@ -55,14 +51,11 @@
       return {
         selected: null,
         polls: [],
-        emptyMessage: '',
-        showMessage: false,
-        message: ''
+        emptyMessage: ''
       }
     },
     mounted () {
       this.getPolls();
-      bus.$on('authentication', this.handleMessage);
     },
     computed: {
       sortedPolls () {
@@ -98,10 +91,6 @@
       },
       isSelected (item) {
         return item === this.selected
-      },
-      handleMessage () {
-        this.showMessage = true;
-        this.message = 'Logged In!';
       }
     }
   }

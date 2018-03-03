@@ -1,12 +1,6 @@
 <template>
   <div class="poll-view">
-    <div v-if="showVoteWarning" class="vote-warning">
-      <p class="warning" v-if="userVoted">You've already voted in this poll!</p>
-      <p class="warning" v-if="!authenticated">Please sign-in to vote!</p>
-      <span class="warning-x button is-danger is-inverted is-small" @click="showVoteWarning = false">
-        <i class="fa fa-times"></i>
-      </span>
-    </div>
+    <message :showMessage="showVoteWarning" :message="message" :status="false"></message>
     <h1 id="poll-title">Vote on Poll: {{poll.title}}</h1>
     <div class="holder">
       <div class="options">
@@ -46,10 +40,14 @@
 </template>
 
 <script>
+  import Message from './message.vue'
   import controller from '../controllers/controller'
   import Chart from 'chart.js'
+  import bus from '../bus'
+
   export default {
     name: 'poll-view',
+    components: { Message },
     props: {
       poll: {
         type: Object,
@@ -66,6 +64,7 @@
         voteOption: '',
         userVoted: false,
         showVoteWarning: false,
+        message: '',
         chartType: 'pie',
         baseColors: [
           'rgba(255, 99, 132',
@@ -82,6 +81,7 @@
       }
     },
     mounted () {
+      bus.$on('messageClosed', this.handleMessageClosed);
       if (this.totalVotes > 0) this.populateChart();
     },
     computed: {
@@ -109,6 +109,7 @@
         if (this.voteOption === '') {
           return;
         } else if (!this.authenticated) {
+          this.message = 'Please sign in to vote.';
           this.showVoteWarning = true;
           return;
         }
@@ -119,6 +120,7 @@
               option.votes++;
             } else {
               console.log('User already voted in this poll');
+              this.message = 'You\'ve already voted in this poll!';
               this.showVoteWarning = true;
             }
           }
@@ -149,6 +151,14 @@
             maintainAspectRatio: false
           }
         })
+      },
+      handleMessageClosed (message) {
+        if (!this.showVoteWarning) {
+          return
+        }
+        if (message === this.message) {
+          this.showVoteWarning = false;
+        }
       }
     },
     watch: {
@@ -163,41 +173,26 @@
 </script>
 
 <style>
-  .poll-view {
-    box-shadow: 1px 1px 5px #888888 ;
-    width: 100%;
-  }
+.poll-view {
+  box-shadow: 1px 1px 5px #888888 ;
+  width: 100%;
+}
 
-  #poll-title {
-    text-align: center;
-    font-size: 1.75em;
-  }
+#poll-title {
+  text-align: center;
+  font-size: 1.75em;
+}
 
-  .holder {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    padding: 1.5em 0 1.5em 0;
-  }
+.holder {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 1.5em 0 1.5em 0;
+}
 
-  .chart-holder {
-    height: 250px;
-    width: 250px;
-  }
-  .vote-warning {
-    text-align: center;
-    background-color:red;
-    color: white;
-    font-size: 1.5em;
-  }
-  .warning {
-    display: inline-block;
-  }
-  .warning-x {
-    float: right;
-    margin-right: 0.25em;
-    height: 1.5em;
-    width: 1.5em;
-  }
-  
+.chart-holder {
+  height: 250px;
+  width: 250px;
+}
+
 </style>
