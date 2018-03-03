@@ -1,20 +1,55 @@
 <template>
-  <div class="signin-page">
+  <div class="columns" style="margin: 0">
+    <div class="column signin-page is-8 is-offset-2">
     <div class="signin">
       <p class="input-heading">Already signed up?</p>
-      <input v-model.trim="username" placeholder="Username">
-      <input v-model="password" placeholder="Password" type="password" @keyup.enter="authenticate">
-      <button class="button is-info" @click="authenticate">Submit</button>
+      <p class="control has-icons-left"  :class="{'is-loading': loginUserLoading}">
+        <input class="input" v-model="username" placeholder="Username">
+        <span class="icon is-small is-left">
+          <i class="fa fa-envelope"></i>
+        </span>
+      </p>
+      <div class="field">
+        <p class="control has-icons-left" :class="{'is-loading': loginUserLoading}">
+          <input class="input" v-model="password" placeholder="Password" type="password" @keyup.enter="authenticate">
+          <span class="icon is-small is-left">
+            <i class="fa fa-lock"></i>
+          </span>
+        </p>
+        <p class="control">
+          <button class="button is-info" @click="authenticate">Submit</button>
+        </p>
+      </div>
+
     </div>
     <div class="signup">
       <p class="input-heading">First time?</p>
-      <input v-model.trim="newUsername" placeholder="Username">
-      <input v-model="newPassword" placeholder="Password" type="password" @keyup.enter="createUser">
-	  <input v-model="confirmedPassword" placeholder="Confirm Password" type="password" @keyup.enter="createUser">
-      <button class="button is-info" @click="createUser">Submit</button>
-	  <p v-if="newPassword !== confirmedPassword">Passwords do not match!</p>
+      <p class="control has-icons-left" :class="{'is-loading': createUserLoading}">
+        <input class="input" v-model="newUsername" placeholder="Username">
+        <span class="icon is-small is-left">
+          <i class="fa fa-envelope"></i>
+        </span>
+      </p>
+      <p class="control has-icons-left" :class="{'is-loading': createUserLoading}">
+        <input class="input" v-model="newPassword" placeholder="Password" type="password" @keyup.enter="createUser">
+        <span class="icon is-small is-left">
+          <i class="fa fa-lock"></i>
+        </span>
+      </p>
+      <p class="control has-icons-left" :class="{'is-loading': createUserLoading}">
+	    <input class="input" :class="{'is-warning': confirmedPassword.length > 0 && newPassword !== confirmedPassword, 'is-danger': newPassword !== confirmedPassword && showPasswordWarning}" v-model="confirmedPassword" placeholder="Confirm Password" type="password" @keyup.enter="createUser">
+        <span class="icon is-small is-left">
+          <i class="fa fa-lock"></i>
+        </span>
+      </p>
+      <p class="control">
+        <button class="button is-info" @click="createUser">Submit</button>
+      </p>
+	  <p v-if="newPassword !== confirmedPassword && showPasswordWarning" style="color:red">Passwords do not match!</p>
     </div>
   </div>
+  </div>
+
 </template>
 
 <script>
@@ -29,17 +64,23 @@
         password: '',
         newUsername: '',
         newPassword: '',
-        confirmedPassword: ''
+        confirmedPassword: '',
+        createUserLoading: false,
+        loginUserLoading: false,
+        showPasswordWarning: false
       }
     },
     methods: {
       authenticate () {
+        this.loginUserLoading = true;
         controller.authenticate(this.username, this.password).then(res => {
+          this.loginUserLoading = false;
           this.username = this.password = '';
           if (res.username) {
             console.log('success');
             //Show successfully logged in
             bus.$emit('authentication', true);
+            this.$router.push('/')
           } else {
             console.log('fail');
             //Show wrong username or password
@@ -48,15 +89,21 @@
       },
       createUser () {
         if (this.confirmedPassword !== this.newPassword) {
+          this.showPasswordWarning = true;
           return;
-		}
+        } else {
+          this.showPasswordWarning = false;
+        }
+        this.createUserLoading = true;
         controller.createUser(this.newUsername, this.newPassword).then(user => {
-          this.newUsername = this.newPassword = '';
+          this.createUserLoading = false;
+          this.newUsername = this.newPassword = this.confirmedPassword = '';
           if (!user) {
             console.log('There was a problem singing up');
           } else {
             console.log(`Successfully signed up ${user}`);
             bus.$emit('authentication', true);
+            this.$router.push('/');
           }
         });
       }
@@ -66,12 +113,16 @@
 
 <style>
 .signin-page {
-  padding: 3%;
+  /*padding: 3%;*/
   text-align: center;
 }
 .input-heading {
   padding: 2%;
   font-size:1.5em;
+}
+
+.control {
+  margin-top: 1%;
 }
 
 </style>
