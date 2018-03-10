@@ -1,6 +1,8 @@
 <template>
   <div class="poll-view">
-    <message :showMessage="showVoteWarning" :message="message" :status="false"></message>
+    <message :showMessage="showVoteWarning" :message="message" :status="false">
+      <p v-if="showVoteWarning && !authenticated">Please <router-link to="/signin">Sign In</router-link> to vote in this poll!</p>
+    </message>
     <h1 id="poll-title">Vote on Poll: {{poll.title}}</h1>
     <div class="holder">
       <div class="options">
@@ -109,7 +111,6 @@
         if (this.voteOption === '') {
           return;
         } else if (!this.authenticated) {
-          this.message = 'Please sign in to vote.';
           this.showVoteWarning = true;
           return;
         }

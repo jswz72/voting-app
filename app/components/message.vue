@@ -1,7 +1,9 @@
 <template>
-  <div class="message-box">
-    <div v-if="showMessage" class="message-content" :style="{'background-color': (status) ? 'green': 'red'}">
-      <p class="message">{{message}}</p>
+  <div v-if="showMessage" class="message-box">
+    <div class="message-content" :style="{'background-color': (status) ? 'green': 'red'}">
+      <div class="message">
+        <slot>{{message}}</slot>
+      </div>
       <span class="message-x button is-danger is-inverted is-small" @click="closeMessage">
         <i class="fa fa-times"></i>
       </span>
@@ -17,8 +19,7 @@ export default {
   name: 'message',
   props: {
     message: {
-      type: String,
-      required: true
+      type: String
     },
     status: {
       type: Boolean,

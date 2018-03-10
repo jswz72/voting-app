@@ -1,12 +1,15 @@
 <template>
   <div>
+    <message message='Poll Submitted!' :showMessage="!authenticated || submitted" :status="authenticated">
+      <p>Please <router-link to="/signin">Sign In</router-link> to create poll!</p>
+    </message>
     <h1 class="title">Create New Poll</h1>
-    <div v-if="authenticated" id="poll-fields">
+    <div id="poll-fields">
       <h2 v-if="submitted">Poll Submitted!</h2>
       <div class="field">
         <label class="label is-medium">Name</label>
         <p class="control">
-          <input class="input is-medium" type="text" placeholder="Poll Name" v-model="pollName">
+          <input class="input is-medium" type="text" placeholder="Poll Name" v-model="pollName" :disabled="!authenticated">
         </p>
       </div>
       <div v-for="(option, index) in options">
@@ -16,7 +19,7 @@
           </div>
           <div class="field has-addons">
             <p class="control is-expanded">
-              <input class="input" type="text" placeholder="Option" v-model="option.name">
+              <input class="input" type="text" placeholder="Option" v-model="option.name" :disabled="!authenticated">
             </p>
             <p class="control" v-if="index > 1">
               <span class="button is-danger" @click="removeOption(index)">Remove Option</span>
@@ -24,7 +27,7 @@
           </div>
         </div>
       </div>
-      <div class="field is-grouped is-grouped-centered">
+      <div class="field is-grouped is-grouped-centered buttons">
         <p class="control">
           <span class="button is-primary" @click="newOption">New Option</span>
         </p>
@@ -33,14 +36,12 @@
         </p>
       </div>
     </div>
-    <div v-else>
-      <p>Must be logged in to create new poll!</p>
-    </div>
   </div>
 </template>
 
 <script>
   import gateway from '../controllers/controller'
+  import Message from './message.vue'
 
   export default {
     name: 'new-poll',
@@ -51,6 +52,7 @@
         default: false
       }
     },
+    components: { Message },
     data () {
       return {
         pollName: '',
@@ -111,6 +113,10 @@
 
   .poll-option {
     margin-bottom: 1%;
+  }
+
+  .buttons {
+    margin-bottom: 10%;
   }
 
 </style>

@@ -3,15 +3,13 @@
     <div>
       <div id="textbox" class="column is-half is-offset-one-quarter">
         <h1>Free Code Camp Voting App</h1>
-        <p>Select a poll to see the results and vote, or
-          <span v-if="!authenticated">
-            <router-link to="/signin">
-              sign-in
-            </router-link>
-            to
-          </span>
-          make a
-          <router-link v-if="authenticated" to="/newpoll">new poll</router-link>
+        <p v-if="!authenticated">
+          Select a poll to see the results, or
+          <router-link to="/signin">sign in</router-link>
+          to make polls and vote!
+        </p>
+        <p v-else>Select a poll to see the results and vote, or create a
+          <router-link to="/newpoll">new poll</router-link>
         </p>
       </div>
     </div>
