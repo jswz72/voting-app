@@ -47,6 +47,9 @@ export default {
 
 .message-box {
   height: 36px;
+  position: fixed;
+  right: 0;
+  width: 100px;
 }
 
 .message-content {

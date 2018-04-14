@@ -18,6 +18,7 @@
         </p>
         <p class="control">
           <button class="button is-info" @click="authenticate">Submit</button>
+          <p v-if="userWarning" style="color: red;">Wrong Username or Password</p>
         </p>
       </div>
 
@@ -37,7 +38,7 @@
         </span>
       </p>
       <p class="control has-icons-left" :class="{'is-loading': createUserLoading}">
-	    <input class="input" :class="{'is-warning': confirmedPassword.length > 0 && newPassword !== confirmedPassword, 'is-danger': newPassword !== confirmedPassword && showPasswordWarning}" v-model="confirmedPassword" placeholder="Confirm Password" type="password" @keyup.enter="createUser">
+	    <input class="input" :class="{'is-warning': confirmedPassword.length > 0 && newPassword !== confirmedPassword, 'is-danger': newPassword !== confirmedPassword && newUserWarning}" v-model="confirmedPassword" placeholder="Confirm Password" type="password" @keyup.enter="createUser">
         <span class="icon is-small is-left">
           <i class="fa fa-lock"></i>
         </span>
@@ -45,7 +46,7 @@
       <p class="control">
         <button class="button is-info" @click="createUser">Submit</button>
       </p>
-	  <p v-if="newPassword !== confirmedPassword && showPasswordWarning" style="color:red">Passwords do not match!</p>
+	  <p v-if="newPassword !== confirmedPassword && newUserWarning" style="color:red">Passwords do not match!</p>
     </div>
   </div>
   </div>
@@ -67,7 +68,8 @@
         confirmedPassword: '',
         createUserLoading: false,
         loginUserLoading: false,
-        showPasswordWarning: false
+        newUserWarning: false,
+        userWarning: false
       }
     },
     methods: {
@@ -79,20 +81,22 @@
           if (res.username) {
             console.log('success');
             //Show successfully logged in
+            this.userWarning = false;
             bus.$emit('authentication', true);
             this.$router.push('/')
           } else {
             console.log('fail');
             //Show wrong username or password
+            this.userWarning = true;
           }
         })
       },
       createUser () {
         if (this.confirmedPassword !== this.newPassword) {
-          this.showPasswordWarning = true;
+          this.newUserWarning = true;
           return;
         } else {
-          this.showPasswordWarning = false;
+          this.newUserWarning = false;
         }
         this.createUserLoading = true;
         controller.createUser(this.newUsername, this.newPassword).then(user => {
