@@ -1,15 +1,11 @@
 <template>
   <div>
-    <message message='Poll Submitted!' :showMessage="!authenticated || submitted" :status="authenticated">
-      <p>Please <router-link to="/signin">Sign In</router-link> to create poll!</p>
-    </message>
     <h1 class="title">Create New Poll</h1>
     <div id="poll-fields">
-      <h2 v-if="submitted">Poll Submitted!</h2>
       <div class="field">
         <label class="label is-medium">Name</label>
         <p class="control">
-          <input class="input is-medium" type="text" placeholder="Poll Name" v-model="pollName" :disabled="!authenticated">
+          <input class="input is-medium" placeholder="Poll Name" v-model="pollName" :disabled="!authenticated">
         </p>
       </div>
       <div v-for="(option, index) in options">
@@ -19,7 +15,7 @@
           </div>
           <div class="field has-addons">
             <p class="control is-expanded">
-              <input class="input" type="text" placeholder="Option" v-model="option.name" :disabled="!authenticated">
+              <input class="input" placeholder="Option" v-model="option.name" :disabled="!authenticated">
             </p>
             <p class="control" v-if="index > 1">
               <span class="button is-danger" @click="removeOption(index)">Remove Option</span>
@@ -41,7 +37,7 @@
 
 <script>
   import gateway from '../controllers/controller'
-  import Message from './message.vue'
+  import bus from '../bus'
 
   export default {
     name: 'new-poll',
@@ -52,7 +48,6 @@
         default: false
       }
     },
-    components: { Message },
     data () {
       return {
         pollName: '',
@@ -69,8 +64,7 @@
         emptyOption: {
           name: '',
           votes: 0
-        },
-        submitted: false
+        }
       }
     },
     methods: {
@@ -83,10 +77,7 @@
       submitPoll () {
         gateway.addPoll(this.pollName, this.options);
         this.clearPoll();
-        this.submitted = true;
-        window.setTimeout(() => {
-          this.submitted = false;
-        }, 2000);
+        bus.$emit('message', { message: 'Poll Submitted!', status: 'success', timeout: 2000 });
       },
       clearPoll () {
         this.pollName = '';

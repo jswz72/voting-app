@@ -1,12 +1,10 @@
 <template>
-  <div v-if="showMessage" class="message-box">
-    <div class="message-content" :style="{'background-color': (status) ? 'green': 'red'}">
-      <div class="message">
-        <slot>{{message}}</slot>
-      </div>
-      <span class="message-x button is-danger is-inverted is-small" @click="closeMessage">
-        <i class="fa fa-times"></i>
-      </span>
+  <div v-if="!suppressMessage && message !== ''" class="message-box" :style="`background-color: ${messageColor}`">
+    <span class="message-x button is-danger is-inverted is-small" @click="suppressMessage = true;">
+      <i class="fa fa-times"></i>
+    </span>
+    <div class="message">
+      <div>{{message}}</div>
     </div>
   </div>
 </template>
@@ -21,53 +19,80 @@ export default {
     message: {
       type: String
     },
-    status: {
-      type: Boolean,
-      required: true
-    },
-    showMessage: {
-      type: Boolean,
-      default: false
+    options: {
+      type: Object,
+      required: false,
+      default: () => ({ status: 'info', timeout: 2000 })
     }
   },
   data () {
     return {
+      suppressMessage: false
+    }
+  },
+  mounted () {
+    bus.$on('message', this.newMessage);
+  },
+  computed: {
+    messageColor () {
+      let color;
+      switch (this.options.status) {
+        case 'success':
+          color = 'rgb(49, 207, 101)';
+          break;
+        case 'fail':
+          color = 'red';
+          break;
+        case 'info':
+        default:
+          color = 'rgb(34, 208, 178)';
+          break;
+      }
+      return color;
     }
   },
   methods: {
-    closeMessage () {
-      bus.$emit('messageClosed', this.message);
+    newMessage () {
+      this.suppressMessage = false;
+      setTimeout(() => this.suppressMessage = true, 2000);
     }
   }
 }
 
 </script>
 
-<style>
+<style lang="scss">
+
+$radius: 0.75em;
+$message-padding: 1em;
 
 .message-box {
-  height: 36px;
-  position: fixed;
-  right: 0;
-  width: 100px;
-}
-
-.message-content {
-  text-align: center;
-  color: white;
-  height: inherit;
+  height: 25%;
+  width: 25%;
+  top: 0;
+  position: sticky;
+  float: right;
+  z-index: 100;
+  border-radius: $radius;
 }
 
 .message {
   display: inline-block;
   background-color: inherit;
   font-size: 1.5em;
+  text-align: center;
+  color: white;
+  height: inherit;
+  border-radius: $radius;
+  padding-left: $message-padding;
+  padding-right: $message-padding;
 }
 
 .message-x {
-  float: right;
-  margin-right: 0.25em;
-  height: 1.5em;
-  width: 1.5em;
+  position: absolute;
+  transform: scale(0.9);
+  top: -0.2em;
+  right: -0.2em;
+  border-radius: 20px;
 }
 </style>

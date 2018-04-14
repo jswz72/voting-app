@@ -3,6 +3,7 @@
   plugins: ['vue'],
   rules: {
     "semi": "off",
-    "spaced-comment": "off"
+    "spaced-comment": "off",
+    "no-return-assign": "off"
   }
 }

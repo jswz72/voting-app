@@ -13,7 +13,7 @@
         </div>
       </nav>
     </header>
-    <message :message="message" :status="messageStatus" :showMessage="showMessage"></message>
+    <message :message="message" :options="messageOptions"></message>
     <router-view :authenticated="authenticated"></router-view>
   </div>
 </template>
@@ -31,9 +31,8 @@
       return {
         dropDownClicked: false,
         authenticated: false,
-        showMessage: false,
         message: '',
-        messageStatus: true
+        messageOptions: {}
       }
     },
     created () {
@@ -41,6 +40,7 @@
     },
     mounted () {
       bus.$on('authentication', this.authenticate);
+      bus.$on('message', this.showMessage);
       if (this.authenticated) {
         this.getProfile();
       }
@@ -50,11 +50,8 @@
         this.authenticated = authStatus;
         window.localStorage.setItem('authentication', authStatus);
         this.message = authStatus ? 'Logged in!' : 'Logged out!';
-        this.messageStatus = true;
-        this.showMessage = true;
-        setTimeout(() => {
-          this.showMessage = false
-        }, 2000);
+        this.messageOptions = { status: 'success', timeout: 2000 };
+        bus.$emit('message');
       },
       getAuthentication () {
         const authentication = window.localStorage.getItem('authentication');
@@ -72,6 +69,16 @@
             window.localStorage.setItem('profile', profileString);
           }
         })
+      },
+      /**
+       * Show message picked up from bus
+       * @param params {Object} Contains required field 'message' and optional fields status and timeout
+       */
+      showMessage (params) {
+        if (params) {
+          this.message = params.message;
+          this.messageOptions = { status: params.status, timeout: params.timeout };
+        }
       }
     }
   }

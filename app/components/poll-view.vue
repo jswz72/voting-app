@@ -1,8 +1,5 @@
 <template>
   <div class="poll-view">
-    <message :showMessage="showVoteWarning" :message="message" :status="false">
-      <p v-if="showVoteWarning && !authenticated">Please <router-link to="/signin">Sign In</router-link> to vote in this poll!</p>
-    </message>
     <h1 id="poll-title">Vote on Poll: {{poll.title}}</h1>
     <div class="holder">
       <div class="options">
@@ -42,14 +39,12 @@
 </template>
 
 <script>
-  import Message from './message.vue'
   import controller from '../controllers/controller'
   import Chart from 'chart.js'
   import bus from '../bus'
 
   export default {
     name: 'poll-view',
-    components: { Message },
     props: {
       poll: {
         type: Object,
@@ -64,9 +59,10 @@
     data () {
       return {
         voteOption: '',
-        userVoted: false,
-        showVoteWarning: false,
-        message: '',
+        messages: {
+          signIn: 'Please sign in to vote in this poll!',
+          alreadyVoted: 'You\'ve already voted in this poll!'
+        },
         chartType: 'pie',
         baseColors: [
           'rgba(255, 99, 132',
@@ -83,8 +79,9 @@
       }
     },
     mounted () {
-      bus.$on('messageClosed', this.handleMessageClosed);
-      if (this.totalVotes > 0) this.populateChart();
+      if (this.totalVotes > 0) {
+        this.populateChart();
+      }
     },
     computed: {
       labels () {
@@ -111,7 +108,7 @@
         if (this.voteOption === '') {
           return;
         } else if (!this.authenticated) {
-          this.showVoteWarning = true;
+          bus.$emit('message', { message: this.messages.signIn, status: 'fail', timeout: 2000 });
           return;
         }
         controller.vote(this.poll.title, this.voteOption).then(res => {
@@ -120,12 +117,9 @@
               const option = this.poll.options.find(option => option.name === this.voteOption);
               option.votes++;
             } else {
-              console.log('User already voted in this poll');
-              this.message = 'You\'ve already voted in this poll!';
-              this.showVoteWarning = true;
+              bus.$emit('message', { message: this.messages.alreadyVoted, status: 'fail', timeout: 2000 });
             }
           }
-          this.userVoted = true;
         });
       },
       populateChart () {
@@ -152,14 +146,6 @@
             maintainAspectRatio: false
           }
         })
-      },
-      handleMessageClosed (message) {
-        if (!this.showVoteWarning) {
-          return
-        }
-        if (message === this.message) {
-          this.showVoteWarning = false;
-        }
       }
     },
     watch: {

@@ -92,6 +92,7 @@
         })
       },
       createUser () {
+        //todo need to handle username taken
         if (this.confirmedPassword !== this.newPassword) {
           this.newUserWarning = true;
           return;
