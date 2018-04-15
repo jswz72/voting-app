@@ -54,11 +54,9 @@ export default {
   methods: {
     newMessage () {
       this.suppressMessage = false;
-      /*
       if (this.options.timeout > 0) {
         setTimeout(() => this.suppressMessage = true, 2000);
       }
-      */
     }
   }
 }
