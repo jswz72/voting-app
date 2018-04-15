@@ -1,10 +1,10 @@
 <template>
   <div v-if="!suppressMessage && message !== ''" class="message-box" :style="`background-color: ${messageColor}`">
-    <span class="message-x button is-danger is-inverted is-small" @click="suppressMessage = true;">
+    <span class="message-x button is-danger is-inverted" @click="suppressMessage = true;">
       <i class="fa fa-times"></i>
     </span>
     <div class="message">
-      <div>{{message}}</div>
+      <p>{{message}}</p>
     </div>
   </div>
 </template>
@@ -54,7 +54,11 @@ export default {
   methods: {
     newMessage () {
       this.suppressMessage = false;
-      setTimeout(() => this.suppressMessage = true, 2000);
+      /*
+      if (this.options.timeout > 0) {
+        setTimeout(() => this.suppressMessage = true, 2000);
+      }
+      */
     }
   }
 }
@@ -67,32 +71,32 @@ $radius: 0.75em;
 $message-padding: 1em;
 
 .message-box {
-  height: 25%;
-  width: 25%;
+  min-height: 3em;
+  min-width: 12em;
   top: 0;
   position: sticky;
   float: right;
   z-index: 100;
   border-radius: $radius;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .message {
-  display: inline-block;
   background-color: inherit;
-  font-size: 1.5em;
+  font-size: 1.1em;
   text-align: center;
   color: white;
-  height: inherit;
   border-radius: $radius;
-  padding-left: $message-padding;
-  padding-right: $message-padding;
+  width: 80%;
 }
 
 .message-x {
   position: absolute;
-  transform: scale(0.9);
-  top: -0.2em;
-  right: -0.2em;
-  border-radius: 20px;
+  transform: scale(0.5);
+  top: -0.3em;
+  right: -0.3em;
+  border-radius: .5em;
 }
 </style>
