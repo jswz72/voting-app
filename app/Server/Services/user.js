@@ -64,10 +64,10 @@ function createUser (req, res) {
   if (!userData.username || !userData.password) return;
 
   User.create(userData, (err, user) => {
-    if (err) throw err;
+    if (err) res.send({});
     else {
       req.session.userId = user._id;
-      res.send(user.username);
+      res.send({ user: user.username });
     }
   })
 };

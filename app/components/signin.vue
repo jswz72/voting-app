@@ -38,7 +38,7 @@
         </span>
       </p>
       <p class="control has-icons-left" :class="{'is-loading': createUserLoading}">
-	    <input class="input" :class="{'is-warning': confirmedPassword.length > 0 && newPassword !== confirmedPassword, 'is-danger': newPassword !== confirmedPassword && newUserWarning}" v-model="confirmedPassword" placeholder="Confirm Password" type="password" @keyup.enter="createUser">
+	    <input class="input" :class="{'is-warning': confirmedPassword.length > 0 && !passwordsMatch, 'is-danger': sentWrongPasswords}" v-model="confirmedPassword" placeholder="Confirm Password" type="password" @keyup.enter="createUser">
         <span class="icon is-small is-left">
           <i class="fa fa-lock"></i>
         </span>
@@ -46,7 +46,8 @@
       <p class="control">
         <button class="button is-info" @click="createUser">Submit</button>
       </p>
-	  <p v-if="newPassword !== confirmedPassword && newUserWarning" style="color:red">Passwords do not match!</p>
+	  <p v-if="sentWrongPasswords" style="color: red;">Passwords do not match!</p>
+    <p v-if="userNameTaken" style="color: red;">Username Already Taken!</p>
     </div>
   </div>
   </div>
@@ -66,10 +67,11 @@
         newUsername: '',
         newPassword: '',
         confirmedPassword: '',
+        sentWrongPasswords: false,
         createUserLoading: false,
         loginUserLoading: false,
-        newUserWarning: false,
-        userWarning: false
+        userWarning: false,
+        userNameTaken: false
       }
     },
     methods: {
@@ -92,25 +94,32 @@
         })
       },
       createUser () {
-        //todo need to handle username taken
-        if (this.confirmedPassword !== this.newPassword) {
-          this.newUserWarning = true;
+        if (!this.passwordsMatch) {
+          this.sentWrongPasswords = true;
           return;
         } else {
-          this.newUserWarning = false;
+          this.sentWrongPasswords = false;
         }
         this.createUserLoading = true;
-        controller.createUser(this.newUsername, this.newPassword).then(user => {
+        controller.createUser(this.newUsername, this.newPassword).then(res => {
+          const { user } = res;
           this.createUserLoading = false;
           this.newUsername = this.newPassword = this.confirmedPassword = '';
           if (!user) {
-            console.log('There was a problem singing up');
+            console.log(`Username taken`);
+            this.userNameTaken = true;
           } else {
+            this.userNameTaken = false;
             console.log(`Successfully signed up ${user}`);
             bus.$emit('authentication', true);
             this.$router.push('/');
           }
         });
+      }
+    },
+    computed: {
+      passwordsMatch () {
+        return this.newPassword === this.confirmedPassword;
       }
     }
   }
